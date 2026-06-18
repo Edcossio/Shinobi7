@@ -1,0 +1,37 @@
+# --- MAVEN & JAVA ---
+# El **/ asegura que ignore el target de los 10 microservicios
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# --- INTELLIJ ---
+.idea/
+*.iml
+out/
+gen/
+
+# --- VS CODE ---
+.vscode/
+*.code-workspace
+
+# --- CONFIGURACIONES DE MAVEN WRAPPER ---
+.mvn/
+mvnw
+mvnw.cmd
+
+# --- ARCHIVOS TEMPORALES DE SISTEMA ---
+.DS_Store
+Thumbs.db
+
+# --- LOGS Y TEMPORALES ---
+*.log
+temp/
+tmp/
+
+# Oracle Cloud Wallet
+**/wallet*/
+*.zip
+*.sso
+*.jks
