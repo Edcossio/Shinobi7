@@ -47,37 +47,23 @@ function solicitarRecuperacion(event) {
     }
 }
 
-    const formRegistro = document.getElementById("form-registro");
-    if (formRegistro) {
-        formRegistro.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const run = document.getElementById("run").value.trim();
-            const nombre = document.getElementById("nombre").value.trim();
-            const correo = document.getElementById("correo").value.trim();
-            const pass = document.getElementById("password").value.trim();
-            const checkTerminos = document.getElementById("check-terminos");
 
-            const checkR = validarRun(run);
-            if (!checkR.valido) return mostrarMensaje(checkR.msj);
-            if (!nombre || nombre.length > 50) return mostrarMensaje("Nombre obligatorio (máx. 50 caracteres).");
+function solicitarRecuperacion(event) {
+    if (event) event.preventDefault();
 
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+    const correo = prompt("Ingresa tu correo electrónico registrado para restablecer tu contraseña:");
 
-            const checkP = validarPassword(pass);
-            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+    if (correo !== null) {
+        const correoLimpio = correo.trim();
+        if (correoLimpio.length === 0) {
+            return mostrarMensaje("Debes ingresar un correo electrónico.");
+        }
 
-            // Validación de Términos y Condiciones
-            if (checkTerminos && !checkTerminos.checked) {
-                return mostrarMensaje("Debes aceptar los Términos y Condiciones para continuar.");
-            }
-
-            // Registro en base local
-            const usuarios = getUsuariosBD();
-            usuarios.push({ run, nombre, correo, rol: "Cliente" });
-            saveUsuariosBD(usuarios);
-
-            mostrarMensaje("Usuario registrado con éxito.", false);
-            window.location.href = "login.html";
-        });
+        const check = validarCorreo(correoLimpio);
+        if (check.valido) {
+            mostrarMensaje(`Se han enviado las instrucciones de restablecimiento al correo: ${correoLimpio}`, false);
+        } else {
+            mostrarMensaje(check.msj);
+        }
     }
+}

@@ -45,7 +45,7 @@ const usuariosIniciales = [
     {
         run: "111111111",
         nombre: "Jose Pizarro",
-        correo: "jose@7shino.cl",
+        correo: "jose@shinobi7.cl",
         rol: "Administrador",
         password: "admin1234" // Contraseña para el admin
     },
