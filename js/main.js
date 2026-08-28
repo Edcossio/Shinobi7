@@ -109,9 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 );
 
                 if (usuarioValido.rol === "Administrador") {
-                    window.location.href = "admin_home.html";
+                    window.location.replace("admin_home.html");[cite, 8]
                 } else {
-                    window.location.href = "index.html";
+                    window.location.replace("index.html");[cite, 8]
                 }
 
             } else {

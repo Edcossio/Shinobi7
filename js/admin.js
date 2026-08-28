@@ -38,7 +38,7 @@ function renderizarTablaAdminProductos() {
 
 
     // Recorrer productos
-    listaProductos.forEach(function(prod, index) {
+    listaProductos.forEach(function (prod, index) {
 
         const limiteCritico = prod.stockCritico || 3;
 
@@ -76,9 +76,9 @@ function renderizarTablaAdminProductos() {
                     <span class="badge ${stockCritico ? "bg-danger" : "bg-success"}">
 
                         ${stockCritico
-                            ? "STOCK CRÍTICO"
-                            : "NORMAL"
-                        }
+                ? "STOCK CRÍTICO"
+                : "NORMAL"
+            }
 
                     </span>
 
@@ -236,7 +236,7 @@ function guardarProductoAdmin(event) {
         // Revisar si el nuevo código ya existe
 
         const codigoExiste = listaProductos.some(
-            function(prod, index) {
+            function (prod, index) {
 
                 return (
                     index !== productoEditando &&
@@ -292,7 +292,7 @@ function guardarProductoAdmin(event) {
     // ==================================================
 
     const codigoExiste = listaProductos.some(
-        function(prod) {
+        function (prod) {
 
             return prod.id.toLowerCase() === codigo.toLowerCase();
 
@@ -569,7 +569,7 @@ function renderizarTablaAdminUsuarios() {
     }
 
 
-    listaUsuarios.forEach(function(u, index) {
+    listaUsuarios.forEach(function (u, index) {
 
         let claseRol = "bg-secondary";
 
@@ -702,13 +702,24 @@ function cambiarRolUsuario(index) {
 
 }
 
+function verificarPermisosAdmin() {
+    const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
+
+    if (!sesionActiva || sesionActiva.rol !== "Administrador") {
+        alert("Acceso denegado: No tienes permisos para acceder a esta página.");
+        sessionStorage.removeItem("sesionActiva");
+        window.location.replace("login.html");
+        return false;
+    }
+    return true;
+}
 
 
 // ======================================================
 // INICIAR PÁGINA
 // ======================================================
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
     // Mostrar productos
 
