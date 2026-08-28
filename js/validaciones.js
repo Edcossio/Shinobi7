@@ -45,4 +45,39 @@ function solicitarRecuperacion(event) {
             mostrarMensaje(check.msj);
         }
     }
+
+    const formRegistro = document.getElementById("form-registro");
+    if (formRegistro) {
+        formRegistro.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const run = document.getElementById("run").value.trim();
+            const nombre = document.getElementById("nombre").value.trim();
+            const correo = document.getElementById("correo").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            const checkTerminos = document.getElementById("check-terminos");
+
+            const checkR = validarRun(run);
+            if (!checkR.valido) return mostrarMensaje(checkR.msj);
+            if (!nombre || nombre.length > 50) return mostrarMensaje("Nombre obligatorio (máx. 50 caracteres).");
+
+            const checkC = validarCorreo(correo);
+            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+
+            const checkP = validarPassword(pass);
+            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+
+            // Validación de Términos y Condiciones
+            if (checkTerminos && !checkTerminos.checked) {
+                return mostrarMensaje("Debes aceptar los Términos y Condiciones para continuar.");
+            }
+
+            // Registro en base local
+            const usuarios = getUsuariosBD();
+            usuarios.push({ run, nombre, correo, rol: "Cliente" });
+            saveUsuariosBD(usuarios);
+
+            mostrarMensaje("Usuario registrado con éxito.", false);
+            window.location.href = "login.html";
+        });
+    }
 }
