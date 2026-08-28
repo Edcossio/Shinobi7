@@ -51,23 +51,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const checkC = validarCorreo(correo);
             if (!checkC.valido) return mostrarMensaje(checkC.msj);
 
-            // Buscar si el usuario existe en nuestra Base de Datos local
+            const checkP = validarPassword(pass);
+            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+
+            // Buscar usuario que coincida en correo Y contraseña
             const usuariosBD = getUsuariosBD();
-            const usuarioValido = usuariosBD.find(u => u.correo.toLowerCase() === correo.toLowerCase());
+            const usuarioValido = usuariosBD.find(u =>
+                u.correo.toLowerCase() === correo.toLowerCase() && u.password === pass
+            );
 
             if (usuarioValido) {
                 // Guardar la sesión activa en SessionStorage
                 sessionStorage.setItem("sesionActiva", JSON.stringify(usuarioValido));
-                mostrarMensaje(`Bienvenido/a, ${usuarioValido.nombre}`, false);
+                mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
 
-                // Redirección basada en el rol real de la BD
+                // Redirección basada en el rol real
                 if (usuarioValido.rol === "Administrador") {
                     window.location.href = "admin_home.html";
                 } else {
                     window.location.href = "index.html";
                 }
             } else {
-                mostrarMensaje("Credenciales incorrectas o usuario no registrado.");
+                mostrarMensaje("Correo o contraseña incorrectos.");
             }
         });
     }
@@ -143,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const usuarios = getUsuariosBD();
-            usuarios.push({ run, nombre, correo, rol: "Cliente" });
+            usuarios.push({ run, nombre, correo, password: pass, rol: "Cliente" });
             saveUsuariosBD(usuarios);
 
             mostrarMensaje("Usuario registrado con éxito.", false);
