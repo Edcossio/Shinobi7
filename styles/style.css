@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. VARIABLES & NEO-BRUTALIST BASE
+   1. VARIABLES & SOBRESCRITURA DE PALETA
    ========================================================================== */
 :root {
     --bg-main: #F2F4F7;
@@ -14,40 +14,14 @@
     --border-dark: #121212;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-main);
     font-family: 'Oswald', 'Segoe UI', sans-serif;
 }
 
-body {
-    background-color: var(--bg-main);
-    color: var(--text-main);
-}
-
 /* ==========================================================================
-   2. ESTRUCTURA & UTILITY
-   ========================================================================== */
-.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
-.d-flex { display: flex; }
-.justify-content-between { justify-content: space-between; }
-.align-items-center { align-items: center; }
-
-.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
-.col-md-3 { width: 25%; padding: 0 15px; }
-.col-md-4 { width: 33.333%; padding: 0 15px; }
-.col-md-6 { width: 50%; padding: 0 15px; }
-
-.mt-5 { margin-top: 3rem; }
-.mb-4 { margin-bottom: 1.5rem; }
-.mb-5 { margin-bottom: 3rem; }
-.p-4 { padding: 1.5rem; }
-.text-center { text-align: center; }
-.w-100 { width: 100%; }
-
-/* ==========================================================================
-   3. ESTILOS DE IDENTIDAD ÚNICA (NEO-BRUTALISMO / GAMING)
+   2. NAVEGACIÓN (NAVBAR)
    ========================================================================== */
 .navbar {
     background-color: #FFFFFF;
@@ -63,7 +37,13 @@ body {
 }
 .logo span { color: var(--accent-blue); }
 
-.nav-links { list-style: none; gap: 30px; }
+.nav-links { 
+    list-style: none; 
+    gap: 30px; 
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
 .nav-item {
     text-decoration: none;
     color: var(--text-main);
@@ -79,27 +59,25 @@ body {
     border-bottom: 3px solid var(--accent-yellow);
 }
 
-/* Tarjeta con sombra dura (Hard Shadow) */
+/* ==========================================================================
+   3. TARJETAS & COMPONENTES NEO-BRUTALISTAS
+   ========================================================================== */
+/* Tarjeta con sombra dura */
 .card {
     background-color: var(--card-bg);
-    border: 3px solid var(--border-dark);
-    border-radius: 0px; /* Bordes rectos neo-brutalistas */
+    border: 3px solid var(--border-dark) !important;
+    border-radius: 0px !important; /* Bordes rectos neo-brutalistas */
     box-shadow: 5px 5px 0px var(--border-dark);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
-    height: 100%;
 }
 
 .card:hover {
     transform: translate(-3px, -3px);
     box-shadow: 8px 8px 0px var(--accent-yellow);
-    border-color: var(--border-dark);
 }
 
 .card-img-top {
-    width: 100%;
-    height: 280px;
-    object-fit: cover;
     border-bottom: 3px solid var(--border-dark);
 }
 
@@ -116,6 +94,7 @@ body {
     padding: 4px 8px;
     text-transform: uppercase;
     box-shadow: 2px 2px 0px var(--border-dark);
+    z-index: 10;
 }
 
 .title-accent {
@@ -123,38 +102,39 @@ body {
     border-left: 6px solid var(--accent-yellow);
     padding-left: 12px;
     font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.price-tag {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent-blue);
 }
 
 /* Botón con respuesta táctil dura */
-.btn {
-    padding: 12px 20px;
-    font-weight: 900;
+.btn-primary {
+    background-color: var(--accent-blue) !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
     text-transform: uppercase;
-    border: 3px solid var(--border-dark);
-    cursor: pointer;
+    border: 3px solid var(--border-dark) !important;
+    border-radius: 0px !important;
     box-shadow: 3px 3px 0px var(--border-dark);
     transition: all 0.15s ease;
 }
 
-.btn-primary {
-    background-color: var(--accent-blue);
-    color: #FFFFFF;
-}
-
 .btn-primary:hover {
-    background-color: var(--accent-yellow);
-    color: var(--border-dark);
+    background-color: var(--accent-yellow) !important;
+    color: var(--border-dark) !important;
     transform: translate(-2px, -2px);
     box-shadow: 5px 5px 0px var(--border-dark);
 }
 
+/* ==========================================================================
+   4. PIE DE PÁGINA (FOOTER)
+   ========================================================================== */
 .footer {
     background: #FFFFFF;
     border-top: 3px solid var(--border-dark);
     padding: 2rem 0;
-}
-
-@media (max-width: 768px) {
-    .col-md-3, .col-md-4, .col-md-6 { width: 100%; margin-bottom: 25px; }
-    .nav-links { flex-direction: column; gap: 15px; }
 }

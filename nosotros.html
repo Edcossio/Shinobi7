@@ -5,16 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quienes Somos - CollectorVault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
 
-    <header class="navbar">
+    <header class="navbar navbar-expand-lg bg-white border-bottom border-dark border-3">
         <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="logo">Collector<span>Vault</span></h1>
+            <h1 class="logo mb-0">Collector<span>Vault</span></h1>
             <nav>
-                <ul class="nav-links d-flex">
+                <ul class="nav-links d-flex mb-0">
                     <li><a href="index.html" class="nav-item">HOME</a></li>
                     <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
                     <li><a href="nosotros.html" class="nav-item active">QUIENES SOMOS</a></li>
@@ -25,49 +26,55 @@
         </div>
     </header>
 
-    <main class="container mt-5">
-        <!-- Sección Informativa -->
-        <section class="card p-4 mb-5">
+    <main class="container my-5">
+        <section class="card p-4 mb-4 shadow-sm border-2">
             <h2 class="title-accent">Sobre CollectorVault</h2>
-            <p style="color: var(--text-muted); line-height: 1.6; margin-top: 15px;">
+            <p class="text-muted mt-3 leading-relaxed">
                 Somos una tienda especializada en la importación y distribución de figuras coleccionables de alta gama
                 (PVC, Resinas, Nendoroids). Garantizamos autenticidad oficial en cada pieza para coleccionistas
                 exigentes.
             </p>
-            <h3 style="margin-top: 25px; font-size: 1.2rem;">Equipo de Desarrollo</h3>
-            <p style="color: var(--text-muted); line-height: 1.6;">
-                Proyecto desarrollado por el Equipo 7 para la asignatura Desarrollo Fullstack II (Duoc UC)[cite: 1].
+            <h3 class="h5 fw-bold mt-3">Equipo de Desarrollo</h3>
+            <p class="text-muted mb-0">
+                Proyecto desarrollado por el Equipo 7 para la asignatura Desarrollo Fullstack II (Duoc UC).
             </p>
         </section>
 
-        <!-- Accesos directos a Blogs y Contacto -->
-        <section class="row">
-            <article class="col-md-6 mb-4">
-                <div class="card p-4">
-                    <h3>📰 Noticias y Blogs</h3>
-                    <p style="color: var(--text-muted); margin: 15px 0;">Descubre artículos sobre cuidado de figuras,
-                        lanzamientos de fábrica y guías de autenticidad.</p>
-                    <a href="blogs.html" class="btn btn-primary text-center" style="text-decoration: none;">Ver
-                        Artículos y Novedades</a>
+        <section class="row g-4">
+            <div class="col-12 col-md-6">
+                <div class="card p-4 h-100 shadow-sm border-2 d-flex flex-column justify-content-between">
+                    <div>
+                        <h3 class="h5 fw-bold">📰 Noticias y Blogs</h3>
+                        <p class="text-muted my-3">
+                            Descubre artículos sobre cuidado de figuras, lanzamientos de fábrica y guías de
+                            autenticidad.
+                        </p>
+                    </div>
+                    <a href="#" class="btn btn-primary w-100 fw-bold">Ver Artículos y Novedades</a>
                 </div>
-            </article>
+            </div>
 
-            <article class="col-md-6 mb-4">
-                <div class="card p-4">
-                    <h3>✉️ Atención al Cliente</h3>
-                    <p style="color: var(--text-muted); margin: 15px 0;">¿Tienes dudas sobre tu pedido o cotizaciones de
-                        preventa? Envíanos un mensaje directo.</p>
-                    <a href="contacto.html" class="btn btn-primary text-center" style="text-decoration: none;">Ir al
-                        Formulario de Contacto</a>
+            <div class="col-12 col-md-6">
+                <div class="card p-4 h-100 shadow-sm border-2 d-flex flex-column justify-content-between">
+                    <div>
+                        <h3 class="h5 fw-bold">✉️ Atención al Cliente</h3>
+                        <p class="text-muted my-3">
+                            ¿Tienes dudas sobre tu pedido o cotizaciones de preventa? Envíanos un mensaje directo.
+                        </p>
+                    </div>
+                    <a href="contacto.html" class="btn btn-primary w-100 fw-bold">Ir al Formulario de Contacto</a>
                 </div>
-            </article>
+            </div>
         </section>
     </main>
 
     <footer class="footer text-center mt-5">
-        <p>&copy; 2026 CollectorVault</p>
+        <div class="container">
+            <p class="text-muted mb-0">&copy; 2026 CollectorVault</p>
+        </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/validaciones.js"></script>
     <script src="js/catalogo.js"></script>
