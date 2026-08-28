@@ -43,4 +43,23 @@ function renderizarCarrito() {
     });
 
     elementoTotal.textContent = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(totalAcumulado);
+
+    function procesarPago() {
+        const carrito = obtenerCarrito();
+        if (carrito.length === 0) {
+            return alert(" Tu carrito está vacío. Añade productos antes de pagar.");
+        }
+
+        // --- NUEVO: Validar si el usuario inició sesión antes de pagar ---
+        const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
+        if (!sesionActiva) {
+            alert(" Debes iniciar sesión o registrarte para procesar el pago.");
+            return window.location.href = "login.html";
+        }
+
+        alert(` ¡Pago procesado con éxito! El comprobante será enviado a: ${sesionActiva.correo}`);
+        localStorage.removeItem("carritoCollectorVault");
+        actualizarContadorCarrito();
+        window.location.href = "index.html";
+    }
 }

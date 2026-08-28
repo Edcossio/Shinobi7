@@ -1,10 +1,10 @@
 function validarCorreo(correo) {
     if (correo.length > 100) return { valido: false, msj: "El correo no debe superar los 100 caracteres." };
-    const dominios = ["@shinobi7.cl", "@gmail.com"];
+    const dominios = ["@duoc.cl", "@profesor.duoc.cl", "@gmail.com", "@shinobi7.cl", "@7shinobi.cl"];
     const esValido = dominios.some(d => correo.toLowerCase().endsWith(d));
     return esValido
         ? { valido: true }
-        : { valido: false, msj: "Solo se permiten dominios @shinobi7.cl o @gmail.com" };
+        : { valido: false, msj: "Solo se permiten dominios @duoc.cl, @profesor.duoc.cl, @gmail.com o @7shinobi.cl" };
 }
 
 function validarPassword(pass) {
@@ -45,6 +45,7 @@ function solicitarRecuperacion(event) {
             mostrarMensaje(check.msj);
         }
     }
+}
 
     const formRegistro = document.getElementById("form-registro");
     if (formRegistro) {
@@ -80,4 +81,3 @@ function solicitarRecuperacion(event) {
             window.location.href = "login.html";
         });
     }
-}
