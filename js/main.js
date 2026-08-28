@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             if (usuarioValido) {
+<<<<<<< HEAD
 
                 sessionStorage.setItem(
                     "sesionActiva",
@@ -108,10 +109,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     false
                 );
 
+=======
+                sessionStorage.setItem("sesionActiva", JSON.stringify(usuarioValido));
+                mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
+
+                // Redirección segura reemplazando el historial
+>>>>>>> 1189eb2efeaba8289de44aa502cafb8fce83ff4d
                 if (usuarioValido.rol === "Administrador") {
-                    window.location.href = "admin_home.html";
+                    window.location.replace("admin_home.html");[cite, 8]
                 } else {
-                    window.location.href = "index.html";
+                    window.location.replace("index.html");[cite, 8]
                 }
 
             } else {
@@ -210,6 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return sesionActiva;
     }
 
+<<<<<<< HEAD
     const sesionActiva =
         actualizarInterfazSesion();
 
@@ -279,6 +287,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 direccionTexto.textContent =
                     usuario.direccion;
             }
+=======
+                    el.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        sessionStorage.removeItem("sesionActiva");
+                        window.location.replace("index.html");[cite, 8]
+                    });
+                }
+            });
+>>>>>>> 1189eb2efeaba8289de44aa502cafb8fce83ff4d
         }
     }
 
@@ -543,6 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
             usuarios.push(nuevoUsuario);
 
             saveUsuariosBD(usuarios);
+<<<<<<< HEAD
 
             // --------------------------------------------------
             // FINALIZAR REGISTRO
@@ -554,6 +572,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             window.location.href =
                 "login.html";
+=======
+            mostrarMensaje("Usuario registrado con éxito.", false);
+            window.location.replace("login.html");[cite, 8]
+>>>>>>> 1189eb2efeaba8289de44aa502cafb8fce83ff4d
         });
     }
 
