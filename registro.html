@@ -13,6 +13,7 @@
     <header class="navbar navbar-expand-lg bg-white border-bottom border-dark border-3">
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="logo mb-0">Collector<span>Vault</span></h1>
+
             <nav>
                 <ul class="nav-links d-flex mb-0">
                     <li><a href="index.html" class="nav-item">HOME</a></li>
@@ -26,91 +27,250 @@
     </header>
 
     <main class="container my-5" style="max-width: 650px;">
+
         <div class="card p-4 shadow-sm border-2">
-            <h2 class="title-accent text-center mb-4">Registro de Usuario</h2>
+
+            <h2 class="title-accent text-center mb-4">
+                Registro de Usuario
+            </h2>
 
             <form id="form-registro">
-                <div class="row g-3">
-                    <div class="col-12 col-md-6">
-                        <label for="run" class="form-label fw-bold">RUN (Sin puntos ni guion):</label>
-                        <input type="text" id="run" class="form-control border-2 border-dark"
-                            placeholder="Ej: 19011022K" required>
-                    </div>
 
+                <div class="row g-3">
+
+                    <!-- RUN -->
                     <div class="col-12 col-md-6">
-                        <label for="nombre" class="form-label fw-bold">NOMBRE COMPLETO:</label>
-                        <input type="text" id="nombre" class="form-control border-2 border-dark" maxlength="50"
+                        <label for="run" class="form-label fw-bold">
+                            RUN (Sin puntos ni guion):
+                        </label>
+
+                        <input
+                            type="text"
+                            id="run"
+                            class="form-control border-2 border-dark"
+                            placeholder="Ej: 19011022K"
                             required>
                     </div>
 
+
+                    <!-- NOMBRE -->
                     <div class="col-12 col-md-6">
-                        <label for="correo" class="form-label fw-bold">CORREO ELECTRÓNICO:</label>
-                        <input type="email" id="correo" class="form-control border-2 border-dark"
-                            placeholder="usuario@duoc.cl o @gmail.com" required>
+                        <label for="nombre" class="form-label fw-bold">
+                            NOMBRE COMPLETO:
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nombre"
+                            class="form-control border-2 border-dark"
+                            maxlength="50"
+                            required>
                     </div>
 
+
+                    <!-- CORREO -->
                     <div class="col-12 col-md-6">
-                        <label for="password" class="form-label fw-bold">CONTRASEÑA (8 a 32 caracteres):</label>
-                        <input type="password" id="password" class="form-control border-2 border-dark" required>
+                        <label for="correo" class="form-label fw-bold">
+                            CORREO ELECTRÓNICO:
+                        </label>
+
+                        <input
+                            type="email"
+                            id="correo"
+                            class="form-control border-2 border-dark"
+                            placeholder="usuario@duoc.cl o @gmail.com"
+                            required>
                     </div>
 
+
+                    <!-- CONTRASEÑA -->
+                    <div class="col-12 col-md-6">
+                        <label for="password" class="form-label fw-bold">
+                            CONTRASEÑA (8 a 32 caracteres):
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            class="form-control border-2 border-dark"
+                            required>
+                    </div>
+
+
+                    <!-- TELÉFONO -->
                     <div class="col-12">
-                        <label for="telefono" class="form-label fw-bold">TELÉFONO (Opcional):</label>
-                        <input type="tel" id="telefono" class="form-control border-2 border-dark"
+                        <label for="telefono" class="form-label fw-bold">
+                            TELÉFONO (Opcional):
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="telefono"
+                            class="form-control border-2 border-dark"
                             placeholder="+56 9 1234 5678">
                     </div>
 
-                    <!-- Selectores dinámicos sincronizados con main.js -->
+
+                    <!-- REGIÓN -->
                     <div class="col-12 col-md-6">
-                        <label for="select-region" class="form-label fw-bold">REGIÓN:</label>
-                        <select id="select-region" class="form-select border-2 border-dark" required>
-                            <option value="">Seleccione Región</option>
-                            <option value="RM">Región Metropolitana</option>
-                            <option value="VS">Región de Valparaíso</option>
-                            <option value="AR">Región de La Araucanía</option>
+                        <label for="select-region" class="form-label fw-bold">
+                            REGIÓN:
+                        </label>
+
+                        <select
+                            id="select-region"
+                            class="form-select border-2 border-dark"
+                            required>
+
+                            <option value="">
+                                Seleccione Región
+                            </option>
+
+                            <option value="RM">
+                                Región Metropolitana
+                            </option>
+
+                            <option value="VS">
+                                Región de Valparaíso
+                            </option>
+
+                            <option value="AR">
+                                Región de La Araucanía
+                            </option>
+
                         </select>
                     </div>
 
+
+                    <!-- COMUNA -->
                     <div class="col-12 col-md-6">
-                        <label for="select-comuna" class="form-label fw-bold">COMUNA:</label>
-                        <select id="select-comuna" class="form-select border-2 border-dark" required>
-                            <option value="">Seleccione Comuna</option>
+                        <label for="select-comuna" class="form-label fw-bold">
+                            COMUNA:
+                        </label>
+
+                        <select
+                            id="select-comuna"
+                            class="form-select border-2 border-dark"
+                            required>
+
+                            <option value="">
+                                Seleccione Comuna
+                            </option>
+
                         </select>
                     </div>
 
-                    <!-- Casillas de verificación (Checkboxes) -->
-                    <div class="col-12 mt-3">
-                        <div class="form-check mb-2">
-                            <input class="form-check-input border-2 border-dark" type="checkbox" id="check-terminos"
-                                required>
-                            <label class="form-check-label fw-bold small" for="check-terminos">
-                                Acepto los <a href="#"
-                                    onclick="alert('Términos y Condiciones: Al registrarte en CollectorVault garantizas el uso responsable de la plataforma.')"
-                                    class="text-primary text-decoration-none">Términos y Condiciones</a> del servicio *
-                            </label>
+
+                    <!-- DIRECCIÓN DE DESPACHO -->
+                    <div class="col-12">
+
+                        <label for="direccion" class="form-label fw-bold">
+                            DIRECCIÓN DE DESPACHO:
+                        </label>
+
+                        <input
+                            type="text"
+                            id="direccion"
+                            class="form-control border-2 border-dark"
+                            placeholder="Ej: Av. Providencia 1234, depto. 501"
+                            maxlength="150"
+                            required>
+
+                        <div class="form-text">
+                            Esta dirección será utilizada para el despacho de tus compras.
                         </div>
+
+                    </div>
+
+
+                    <!-- CHECKBOXES -->
+                    <div class="col-12 mt-3">
+
+                        <div class="form-check mb-2">
+
+                            <input
+                                class="form-check-input border-2 border-dark"
+                                type="checkbox"
+                                id="check-terminos"
+                                required>
+
+                            <label
+                                class="form-check-label fw-bold small"
+                                for="check-terminos">
+
+                                Acepto los
+
+                                <a
+                                    href="#"
+                                    onclick="alert('Términos y Condiciones: Al registrarte en CollectorVault garantizas el uso responsable de la plataforma.')"
+                                    class="text-primary text-decoration-none">
+
+                                    Términos y Condiciones
+
+                                </a>
+
+                                del servicio *
+
+                            </label>
+
+                        </div>
+
+
                         <div class="form-check">
-                            <input class="form-check-input border-2 border-dark" type="checkbox" id="check-noticias">
-                            <label class="form-check-label fw-bold small text-muted" for="check-noticias">
+
+                            <input
+                                class="form-check-input border-2 border-dark"
+                                type="checkbox"
+                                id="check-noticias">
+
+                            <label
+                                class="form-check-label fw-bold small text-muted"
+                                for="check-noticias">
+
                                 Deseo recibir noticias, ofertas y lanzamientos de preventa en mi correo electrónico
                                 (Opcional)
+
                             </label>
+
                         </div>
+
                     </div>
 
+
+                    <!-- BOTÓN REGISTRAR -->
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">Registrarse</button>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 btn-lg fw-bold">
+
+                            Registrarse
+
+                        </button>
+
                     </div>
+
                 </div>
+
             </form>
+
         </div>
+
     </main>
 
+
     <footer class="footer text-center mt-5">
+
         <div class="container">
-            <p class="text-muted mb-0">&copy; 2026 CollectorVault</p>
+
+            <p class="text-muted mb-0">
+                &copy; 2026 CollectorVault
+            </p>
+
         </div>
+
     </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/data.js"></script>
@@ -118,6 +278,7 @@
     <script src="js/catalogo.js"></script>
     <script src="js/carrito.js"></script>
     <script src="js/main.js"></script>
+
 </body>
 
 </html>

@@ -1,179 +1,560 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Actualizar contador del carrito
+
+    // ==========================================================
+    // CARRITO
+    // ==========================================================
     if (typeof actualizarContadorCarrito === "function") {
         actualizarContadorCarrito();
     }
 
+    // ==========================================================
+    // PRODUCTOS
+    // ==========================================================
     const listaProductos = getProductosBD();
 
-    // 2. Renderizar Catálogo Completo (productos.html)
     if (document.getElementById("contenedor-productos")) {
         renderizarCatalogo(listaProductos, "contenedor-productos");
     }
 
-    // 3. Renderizar Destacados (index.html)
     if (document.getElementById("contenedor-destacados")) {
         const destacados = listaProductos.filter(p => p.destacado);
         renderizarCatalogo(destacados, "contenedor-destacados");
     }
 
-    // 4. Renderizar Detalle de Producto (detalle.html)
     if (document.getElementById("contenedor-detalle-producto")) {
         cargarDetalleProducto();
     }
 
-    // 5. Selector Dinámico de Regiones y Comunas (registro.html)
+    // ==========================================================
+    // REGIONES Y COMUNAS
+    // ==========================================================
     const selectRegion = document.getElementById("select-region");
     const selectComuna = document.getElementById("select-comuna");
+
     if (selectRegion && selectComuna) {
-        selectRegion.addEventListener("change", (e) => {
-            selectComuna.innerHTML = '<option value="">Seleccione Comuna</option>';
-            const reg = regionesYComunas.find(r => r.codigo === e.target.value);
-            if (reg) {
-                reg.comunas.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    selectComuna.appendChild(opt);
+
+        selectRegion.addEventListener("change", e => {
+
+            selectComuna.innerHTML =
+                '<option value="">Seleccione Comuna</option>';
+
+            const region = regionesYComunas.find(
+                r => r.codigo === e.target.value
+            );
+
+            if (region) {
+                region.comunas.forEach(comuna => {
+
+                    const option = document.createElement("option");
+
+                    option.value = comuna;
+                    option.textContent = comuna;
+
+                    selectComuna.appendChild(option);
                 });
             }
         });
     }
 
-    // 6. Listener Formulario Login
+    // ==========================================================
+    // LOGIN
+    // ==========================================================
     const formLogin = document.getElementById("form-login");
+
     if (formLogin) {
-        formLogin.addEventListener("submit", (e) => {
+
+        formLogin.addEventListener("submit", e => {
+
             e.preventDefault();
-            const correo = document.getElementById("correo").value.trim();
-            const pass = document.getElementById("password").value.trim();
 
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+            const correo = document
+                .getElementById("correo")
+                .value
+                .trim();
 
-            const checkP = validarPassword(pass);
-            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+            const pass = document
+                .getElementById("password")
+                .value
+                .trim();
 
-            // Buscar usuario que coincida en correo Y contraseña
-            const passCodificada = btoa(pass);
+            const checkCorreo = validarCorreo(correo);
+
+            if (!checkCorreo.valido) {
+                return mostrarMensaje(checkCorreo.msj);
+            }
+
+            const checkPassword = validarPassword(pass);
+
+            if (!checkPassword.valido) {
+                return mostrarMensaje(checkPassword.msj);
+            }
 
             const usuariosBD = getUsuariosBD();
+
             const usuarioValido = usuariosBD.find(u =>
-                u.correo.toLowerCase() === correo.toLowerCase() && u.password === passCodificada
+                u.correo.toLowerCase() === correo.toLowerCase() &&
+                u.password === pass
             );
 
             if (usuarioValido) {
-                // Guardar la sesión activa en SessionStorage
-                sessionStorage.setItem("sesionActiva", JSON.stringify(usuarioValido));
-                mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
 
-                // Redirección basada en el rol real
+                sessionStorage.setItem(
+                    "sesionActiva",
+                    JSON.stringify(usuarioValido)
+                );
+
+                mostrarMensaje(
+                    `¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`,
+                    false
+                );
+
                 if (usuarioValido.rol === "Administrador") {
                     window.location.href = "admin_home.html";
                 } else {
                     window.location.href = "index.html";
                 }
+
             } else {
-                mostrarMensaje("Correo o contraseña incorrectos.");
+
+                mostrarMensaje(
+                    "Correo o contraseña incorrectos."
+                );
             }
         });
     }
 
-    // --- NUEVO: Control Dinámico del Navbar ---
+    // ==========================================================
+    // NAVBAR / SESIÓN
+    // ==========================================================
     function actualizarInterfazSesion() {
-        const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
-        const navLinks = document.querySelector(".nav-links");
 
-        if (sesionActiva && navLinks) {
-            // Si el usuario es Administrador, agregamos un acceso directo al panel en la barra pública
-            if (sesionActiva.rol === "Administrador" && !document.getElementById("link-panel-admin")) {
-                const liAdmin = document.createElement("li");
-                liAdmin.innerHTML = `<a href="admin_home.html" id="link-panel-admin" class="nav-item fw-bold text-danger" style="background: #ffebee; border-radius: 4px; padding: 5px 10px;">ADMIN</a>`;
-                navLinks.insertBefore(liAdmin, navLinks.firstChild);
+        const sesionGuardada =
+            sessionStorage.getItem("sesionActiva");
+
+        const sesionActiva =
+            sesionGuardada
+                ? JSON.parse(sesionGuardada)
+                : null;
+
+        const navLinks =
+            document.querySelector(".nav-links");
+
+        const enlacesNav =
+            document.querySelectorAll(".nav-item");
+
+        if (!sesionActiva) {
+            return null;
+        }
+
+        // ------------------------------------------------------
+        // PANEL ADMIN
+        // ------------------------------------------------------
+        if (
+            sesionActiva.rol === "Administrador" &&
+            navLinks &&
+            !document.getElementById("link-panel-admin")
+        ) {
+
+            const liAdmin = document.createElement("li");
+
+            liAdmin.innerHTML = `
+                <a href="admin_home.html"
+                   id="link-panel-admin"
+                   class="nav-item fw-bold text-danger">
+                    ADMIN
+                </a>
+            `;
+
+            navLinks.insertBefore(
+                liAdmin,
+                navLinks.firstChild
+            );
+        }
+
+        // ------------------------------------------------------
+        // CERRAR SESIÓN
+        // ------------------------------------------------------
+        enlacesNav.forEach(enlace => {
+
+            if (
+                enlace.textContent.includes(
+                    "INICIAR SESIÓN"
+                )
+            ) {
+
+                const primerNombre =
+                    sesionActiva.nombre
+                        ? sesionActiva.nombre.split(" ")[0]
+                        : "";
+
+                enlace.textContent =
+                    `CERRAR SESIÓN (${primerNombre})`;
+
+                enlace.href = "#";
+                enlace.classList.add("text-danger");
+
+                enlace.addEventListener("click", e => {
+
+                    e.preventDefault();
+
+                    sessionStorage.removeItem(
+                        "sesionActiva"
+                    );
+
+                    window.location.href =
+                        "index.html";
+                });
             }
+        });
 
-            // Cambiar "INICIAR SESIÓN" por "CERRAR SESIÓN"
-            const enlacesNav = document.querySelectorAll(".nav-item");
-            enlacesNav.forEach(el => {
-                if (el.textContent.includes("INICIAR SESIÓN")) {
-                    el.textContent = "CERRAR SESIÓN"; // <-- Texto limpio sin el nombre
-                    el.href = "#";
-                    el.classList.add("text-danger");
+        return sesionActiva;
+    }
 
-                    el.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        sessionStorage.removeItem("sesionActiva");
-                        window.location.href = "index.html";
-                    });
-                }
-            });
+    const sesionActiva =
+        actualizarInterfazSesion();
+
+    // ==========================================================
+    // DATOS DE DESPACHO
+    // ==========================================================
+    function actualizarDespacho() {
+
+        if (
+            !document.getElementById(
+                "contenedor-carrito-items"
+            )
+        ) {
+            return;
+        }
+
+        const direccionInput =
+            document.getElementById(
+                "direccion-despacho"
+            );
+
+        if (!direccionInput) {
+            return;
+        }
+
+        const sesionGuardada =
+            sessionStorage.getItem("sesionActiva");
+
+        const usuario =
+            sesionGuardada
+                ? JSON.parse(sesionGuardada)
+                : null;
+
+        // ------------------------------------------------------
+        // SIN SESIÓN
+        // ------------------------------------------------------
+        if (!usuario) {
+
+            direccionInput.value =
+                "Inicia sesión para ver tu dirección";
+
+            direccionInput.readOnly = true;
+
+            return;
+        }
+
+        // ------------------------------------------------------
+        // CON SESIÓN
+        // ------------------------------------------------------
+        if (usuario.direccion) {
+
+            direccionInput.value =
+                usuario.direccion;
+
+            direccionInput.readOnly = true;
+
+            direccionInput.style.cursor =
+                "default";
+
+            const direccionTexto =
+                document.getElementById(
+                    "direccion-usuario"
+                );
+
+            if (direccionTexto) {
+
+                direccionTexto.textContent =
+                    usuario.direccion;
+            }
         }
     }
 
-    // Ejecutar al cargar cualquier página
-    actualizarInterfazSesion();
+    actualizarDespacho();
 
-    // 7. Listener Formulario Contacto
-    const formContacto = document.getElementById("form-contacto");
+    // ==========================================================
+    // CONTACTO
+    // ==========================================================
+    const formContacto =
+        document.getElementById("form-contacto");
+
     if (formContacto) {
-        formContacto.addEventListener("submit", (e) => {
+
+        formContacto.addEventListener("submit", e => {
+
             e.preventDefault();
-            const nombre = document.getElementById("nombre-contacto").value.trim();
-            const correo = document.getElementById("correo-contacto").value.trim();
-            const comentario = document.getElementById("comentario").value.trim();
 
-            if (!nombre || nombre.length > 100) return mostrarMensaje("Nombre obligatorio (máx. 100 caracteres).");
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
-            if (!comentario || comentario.length > 500) return mostrarMensaje("Comentario obligatorio (máx. 500 caracteres).");
+            const nombre =
+                document
+                    .getElementById("nombre-contacto")
+                    .value
+                    .trim();
 
-            mostrarMensaje("Mensaje enviado con éxito.", false);
+            const correo =
+                document
+                    .getElementById("correo-contacto")
+                    .value
+                    .trim();
+
+            const comentario =
+                document
+                    .getElementById("comentario")
+                    .value
+                    .trim();
+
+            if (!nombre || nombre.length > 100) {
+
+                return mostrarMensaje(
+                    "Nombre obligatorio (máx. 100 caracteres)."
+                );
+            }
+
+            const checkCorreo =
+                validarCorreo(correo);
+
+            if (!checkCorreo.valido) {
+                return mostrarMensaje(
+                    checkCorreo.msj
+                );
+            }
+
+            if (
+                !comentario ||
+                comentario.length > 500
+            ) {
+
+                return mostrarMensaje(
+                    "Comentario obligatorio (máx. 500 caracteres)."
+                );
+            }
+
+            mostrarMensaje(
+                "Mensaje enviado con éxito.",
+                false
+            );
+
             formContacto.reset();
         });
     }
 
-    // 8. Listener Formulario Registro (Blindado contra duplicados y con contraseña codificada)
-    const formRegistro = document.getElementById("form-registro");
+    // ==========================================================
+    // REGISTRO
+    // ==========================================================
+    const formRegistro =
+        document.getElementById("form-registro");
+
     if (formRegistro) {
-        formRegistro.addEventListener("submit", (e) => {
+
+        formRegistro.addEventListener("submit", e => {
+
             e.preventDefault();
-            const run = document.getElementById("run").value.trim();
-            const nombre = document.getElementById("nombre").value.trim();
-            const correo = document.getElementById("correo").value.trim();
-            const pass = document.getElementById("password").value.trim();
-            const checkTerminos = document.getElementById("check-terminos");
 
-            const checkR = validarRun(run);
-            if (!checkR.valido) return mostrarMensaje(checkR.msj);
-            if (!nombre || nombre.length > 50) return mostrarMensaje("Nombre obligatorio (máx. 50 caracteres).");
+            // --------------------------------------------------
+            // DATOS
+            // --------------------------------------------------
+            const run =
+                document
+                    .getElementById("run")
+                    .value
+                    .trim();
 
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+            const nombre =
+                document
+                    .getElementById("nombre")
+                    .value
+                    .trim();
 
-            const checkP = validarPassword(pass);
-            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+            const correo =
+                document
+                    .getElementById("correo")
+                    .value
+                    .trim();
 
-            if (checkTerminos && !checkTerminos.checked) {
-                return mostrarMensaje("Debes aceptar los Términos y Condiciones para continuar.");
+            const pass =
+                document
+                    .getElementById("password")
+                    .value
+                    .trim();
+
+            const telefonoElemento =
+                document.getElementById("telefono");
+
+            const telefono =
+                telefonoElemento
+                    ? telefonoElemento.value.trim()
+                    : "";
+
+            const direccionElemento =
+                document.getElementById("direccion");
+
+            const direccion =
+                direccionElemento
+                    ? direccionElemento.value.trim()
+                    : "";
+
+            const selectRegion =
+                document.getElementById(
+                    "select-region"
+                );
+
+            const selectComuna =
+                document.getElementById(
+                    "select-comuna"
+                );
+
+            const region =
+                selectRegion
+                    ? selectRegion.value
+                    : "";
+
+            const comuna =
+                selectComuna
+                    ? selectComuna.value
+                    : "";
+
+            const checkTerminos =
+                document.getElementById(
+                    "check-terminos"
+                );
+
+            // --------------------------------------------------
+            // VALIDACIONES
+            // --------------------------------------------------
+            const checkRun =
+                validarRun(run);
+
+            if (!checkRun.valido) {
+                return mostrarMensaje(
+                    checkRun.msj
+                );
             }
 
-            const usuarios = getUsuariosBD();
+            if (
+                !nombre ||
+                nombre.length > 50
+            ) {
 
-            // Validar que el RUN o el Correo no existan previamente
-            const existeUsuario = usuarios.some(u => u.run === run || u.correo.toLowerCase() === correo.toLowerCase());
+                return mostrarMensaje(
+                    "Nombre obligatorio (máx. 50 caracteres)."
+                );
+            }
+
+            const checkCorreo =
+                validarCorreo(correo);
+
+            if (!checkCorreo.valido) {
+                return mostrarMensaje(
+                    checkCorreo.msj
+                );
+            }
+
+            const checkPassword =
+                validarPassword(pass);
+
+            if (!checkPassword.valido) {
+                return mostrarMensaje(
+                    checkPassword.msj
+                );
+            }
+
+            if (!region) {
+
+                return mostrarMensaje(
+                    "Debes seleccionar una región."
+                );
+            }
+
+            if (!comuna) {
+
+                return mostrarMensaje(
+                    "Debes seleccionar una comuna."
+                );
+            }
+
+            if (
+                !direccion ||
+                direccion.length > 150
+            ) {
+
+                return mostrarMensaje(
+                    "Debes ingresar una dirección válida (máx. 150 caracteres)."
+                );
+            }
+
+            if (
+                checkTerminos &&
+                !checkTerminos.checked
+            ) {
+
+                return mostrarMensaje(
+                    "Debes aceptar los Términos y Condiciones para continuar."
+                );
+            }
+
+            // --------------------------------------------------
+            // USUARIOS EXISTENTES
+            // --------------------------------------------------
+            const usuarios =
+                getUsuariosBD();
+
+            const existeUsuario =
+                usuarios.some(u =>
+                    u.run === run ||
+                    u.correo.toLowerCase() ===
+                    correo.toLowerCase()
+                );
+
             if (existeUsuario) {
-                return mostrarMensaje("Ya existe un usuario registrado con este RUN o correo electrónico.");
+
+                return mostrarMensaje(
+                    "Ya existe un usuario registrado con este RUN o correo electrónico."
+                );
             }
 
-            // Codificar la contraseña en Base64 visualmente
-            const passwordCodificada = btoa(pass);
+            // --------------------------------------------------
+            // CREAR USUARIO
+            // --------------------------------------------------
+            const nuevoUsuario = {
 
-            // Guardar usuario único con la contraseña codificada
-            usuarios.push({ run, nombre, correo, password: passwordCodificada, rol: "Cliente" });
+                run: run,
+                nombre: nombre,
+                correo: correo,
+                password: pass,
+                telefono: telefono,
+                region: region,
+                comuna: comuna,
+                direccion: direccion,
+                rol: "Cliente"
+
+            };
+
+            usuarios.push(nuevoUsuario);
+
             saveUsuariosBD(usuarios);
 
-            mostrarMensaje("Usuario registrado con éxito.", false);
-            window.location.href = "login.html";
+            // --------------------------------------------------
+            // FINALIZAR REGISTRO
+            // --------------------------------------------------
+            mostrarMensaje(
+                "Usuario registrado con éxito.",
+                false
+            );
+
+            window.location.href =
+                "login.html";
         });
     }
+
 });
