@@ -1,9 +1,9 @@
 function validarCorreo(correo) {
     if (correo.length > 100) return { valido: false, msj: "El correo no debe superar los 100 caracteres." };
-    const dominios = [ "@shinobi7.cl", "@gmail.com"];
+    const dominios = ["@shinobi7.cl", "@gmail.com"];
     const esValido = dominios.some(d => correo.toLowerCase().endsWith(d));
-    return esValido 
-        ? { valido: true } 
+    return esValido
+        ? { valido: true }
         : { valido: false, msj: "Solo se permiten dominios @shinobi7.cl o @gmail.com" };
 }
 
@@ -25,4 +25,24 @@ function validarRun(run) {
 
 function mostrarMensaje(msj, esError = true) {
     alert(`${esError ? ' ERROR: ' : ' ÉXITO: '}${msj}`);
+}
+
+function solicitarRecuperacion(event) {
+    if (event) event.preventDefault();
+
+    const correo = prompt("Ingresa tu correo electrónico registrado para restablecer tu contraseña:");
+
+    if (correo !== null) {
+        const correoLimpio = correo.trim();
+        if (correoLimpio.length === 0) {
+            return mostrarMensaje("Debes ingresar un correo electrónico.");
+        }
+
+        const check = validarCorreo(correoLimpio);
+        if (check.valido) {
+            mostrarMensaje(`Se han enviado las instrucciones de restablecimiento al correo: ${correoLimpio}`, false);
+        } else {
+            mostrarMensaje(check.msj);
+        }
+    }
 }
