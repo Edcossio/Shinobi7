@@ -1,9 +1,9 @@
 function validarCorreo(correo) {
     if (correo.length > 100) return { valido: false, msj: "El correo no debe superar los 100 caracteres." };
-    const dominios = [ "@shinobi7.cl", "@gmail.com"];
+    const dominios = ["@shinobi7.cl", "@gmail.com"];
     const esValido = dominios.some(d => correo.toLowerCase().endsWith(d));
-    return esValido 
-        ? { valido: true } 
+    return esValido
+        ? { valido: true }
         : { valido: false, msj: "Solo se permiten dominios @shinobi7.cl o @gmail.com" };
 }
 
@@ -25,4 +25,59 @@ function validarRun(run) {
 
 function mostrarMensaje(msj, esError = true) {
     alert(`${esError ? ' ERROR: ' : ' ÉXITO: '}${msj}`);
+}
+
+function solicitarRecuperacion(event) {
+    if (event) event.preventDefault();
+
+    const correo = prompt("Ingresa tu correo electrónico registrado para restablecer tu contraseña:");
+
+    if (correo !== null) {
+        const correoLimpio = correo.trim();
+        if (correoLimpio.length === 0) {
+            return mostrarMensaje("Debes ingresar un correo electrónico.");
+        }
+
+        const check = validarCorreo(correoLimpio);
+        if (check.valido) {
+            mostrarMensaje(`Se han enviado las instrucciones de restablecimiento al correo: ${correoLimpio}`, false);
+        } else {
+            mostrarMensaje(check.msj);
+        }
+    }
+
+    const formRegistro = document.getElementById("form-registro");
+    if (formRegistro) {
+        formRegistro.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const run = document.getElementById("run").value.trim();
+            const nombre = document.getElementById("nombre").value.trim();
+            const correo = document.getElementById("correo").value.trim();
+            const pass = document.getElementById("password").value.trim();
+            const checkTerminos = document.getElementById("check-terminos");
+
+            const checkR = validarRun(run);
+            if (!checkR.valido) return mostrarMensaje(checkR.msj);
+            if (!nombre || nombre.length > 50) return mostrarMensaje("Nombre obligatorio (máx. 50 caracteres).");
+
+            const checkC = validarCorreo(correo);
+            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+
+            const checkP = validarPassword(pass);
+            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+
+            // Validación de Términos y Condiciones
+            if (checkTerminos && !checkTerminos.checked) {
+                return mostrarMensaje("Debes aceptar los Términos y Condiciones para continuar.");
+            }
+
+            // Registro en base local
+            const usuarios = getUsuariosBD();
+            usuarios.push({ run, nombre, correo, rol: "Cliente" });
+            saveUsuariosBD(usuarios);
+
+            mostrarMensaje("Usuario registrado con éxito.", false);
+            window.location.href = "login.html";
+        });
+    }
 }
