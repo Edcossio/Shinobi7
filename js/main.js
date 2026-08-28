@@ -63,15 +63,14 @@ document.addEventListener("DOMContentLoaded", () => {
             );
 
             if (usuarioValido) {
-                // Guardar la sesión activa en SessionStorage
                 sessionStorage.setItem("sesionActiva", JSON.stringify(usuarioValido));
                 mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
 
-                // Redirección basada en el rol real
+                // Redirección segura reemplazando el historial
                 if (usuarioValido.rol === "Administrador") {
-                    window.location.href = "admin_home.html";
+                    window.location.replace("admin_home.html");[cite, 8]
                 } else {
-                    window.location.href = "index.html";
+                    window.location.replace("index.html");[cite, 8]
                 }
             } else {
                 mostrarMensaje("Correo o contraseña incorrectos.");
@@ -103,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     el.addEventListener("click", (e) => {
                         e.preventDefault();
                         sessionStorage.removeItem("sesionActiva");
-                        window.location.href = "index.html";
+                        window.location.replace("index.html");[cite, 8]
                     });
                 }
             });
@@ -171,9 +170,8 @@ document.addEventListener("DOMContentLoaded", () => {
             // Guardar usuario único con la contraseña codificada
             usuarios.push({ run, nombre, correo, password: passwordCodificada, rol: "Cliente" });
             saveUsuariosBD(usuarios);
-
             mostrarMensaje("Usuario registrado con éxito.", false);
-            window.location.href = "login.html";
+            window.location.replace("login.html");[cite, 8]
         });
     }
 });
