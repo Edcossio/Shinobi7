@@ -55,9 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!checkP.valido) return mostrarMensaje(checkP.msj);
 
             // Buscar usuario que coincida en correo Y contraseña
+            const passCodificada = btoa(pass);
+
             const usuariosBD = getUsuariosBD();
             const usuarioValido = usuariosBD.find(u =>
-                u.correo.toLowerCase() === correo.toLowerCase() && u.password === pass
+                u.correo.toLowerCase() === correo.toLowerCase() && u.password === passCodificada
             );
 
             if (usuarioValido) {
@@ -131,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 8. Listener Formulario Registro
+    // 8. Listener Formulario Registro (Blindado contra duplicados y con contraseña codificada)
     const formRegistro = document.getElementById("form-registro");
     if (formRegistro) {
         formRegistro.addEventListener("submit", (e) => {
@@ -163,8 +166,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 return mostrarMensaje("Ya existe un usuario registrado con este RUN o correo electrónico.");
             }
 
-            // Guardar usuario único
-            usuarios.push({ run, nombre, correo, password: pass, rol: "Cliente" });
+            // Codificar la contraseña en Base64 visualmente
+            const passwordCodificada = btoa(pass);
+
+            // Guardar usuario único con la contraseña codificada
+            usuarios.push({ run, nombre, correo, password: passwordCodificada, rol: "Cliente" });
             saveUsuariosBD(usuarios);
 
             mostrarMensaje("Usuario registrado con éxito.", false);

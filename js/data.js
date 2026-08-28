@@ -47,14 +47,14 @@ const usuariosIniciales = [
         nombre: "Jose Pizarro",
         correo: "jose@shinobi7.cl",
         rol: "Administrador",
-        password: "admin1234" // Contraseña para el admin
+        password: btoa("admin1234") // <-- Con btoa
     },
     {
         run: "184567890",
         nombre: "Camila Soto",
         correo: "camila@gmail.com",
         rol: "Vendedor",
-        password: "password123" // Contraseña para el vendedor
+        password: btoa("password123") // <-- Con btoa
     }
 ];
 
