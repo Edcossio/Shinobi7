@@ -1,0 +1,160 @@
+/* ==========================================================================
+   1. VARIABLES & NEO-BRUTALIST BASE
+   ========================================================================== */
+:root {
+    --bg-main: #F2F4F7;
+    --card-bg: #FFFFFF;
+    --text-main: #121212;
+    --text-muted: #555555;
+    
+    /* Acentos */
+    --accent-blue: #0091EA; 
+    --accent-red: #FF3D00;  
+    --accent-yellow: #FFD700; /* Pikachu Gold */
+    --border-dark: #121212;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Oswald', 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+}
+
+/* ==========================================================================
+   2. ESTRUCTURA & UTILITY
+   ========================================================================== */
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 15px; }
+.d-flex { display: flex; }
+.justify-content-between { justify-content: space-between; }
+.align-items-center { align-items: center; }
+
+.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+.col-md-3 { width: 25%; padding: 0 15px; }
+.col-md-4 { width: 33.333%; padding: 0 15px; }
+.col-md-6 { width: 50%; padding: 0 15px; }
+
+.mt-5 { margin-top: 3rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 3rem; }
+.p-4 { padding: 1.5rem; }
+.text-center { text-align: center; }
+.w-100 { width: 100%; }
+
+/* ==========================================================================
+   3. ESTILOS DE IDENTIDAD ÚNICA (NEO-BRUTALISMO / GAMING)
+   ========================================================================== */
+.navbar {
+    background-color: #FFFFFF;
+    border-bottom: 4px solid var(--border-dark);
+    padding: 1.2rem 0;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.logo span { color: var(--accent-blue); }
+
+.nav-links { list-style: none; gap: 30px; }
+.nav-item {
+    text-decoration: none;
+    color: var(--text-main);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    padding-bottom: 4px;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover, .nav-item.active {
+    color: var(--accent-blue);
+    border-bottom: 3px solid var(--accent-yellow);
+}
+
+/* Tarjeta con sombra dura (Hard Shadow) */
+.card {
+    background-color: var(--card-bg);
+    border: 3px solid var(--border-dark);
+    border-radius: 0px; /* Bordes rectos neo-brutalistas */
+    box-shadow: 5px 5px 0px var(--border-dark);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0px var(--accent-yellow);
+    border-color: var(--border-dark);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-bottom: 3px solid var(--border-dark);
+}
+
+/* Etiqueta tipo ticket cortado */
+.badge-new {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--accent-yellow);
+    color: var(--border-dark);
+    border: 2px solid var(--border-dark);
+    font-weight: 900;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    box-shadow: 2px 2px 0px var(--border-dark);
+}
+
+.title-accent {
+    text-transform: uppercase;
+    border-left: 6px solid var(--accent-yellow);
+    padding-left: 12px;
+    font-size: 1.5rem;
+}
+
+/* Botón con respuesta táctil dura */
+.btn {
+    padding: 12px 20px;
+    font-weight: 900;
+    text-transform: uppercase;
+    border: 3px solid var(--border-dark);
+    cursor: pointer;
+    box-shadow: 3px 3px 0px var(--border-dark);
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background-color: var(--accent-blue);
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-yellow);
+    color: var(--border-dark);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--border-dark);
+}
+
+.footer {
+    background: #FFFFFF;
+    border-top: 3px solid var(--border-dark);
+    padding: 2rem 0;
+}
+
+@media (max-width: 768px) {
+    .col-md-3, .col-md-4, .col-md-6 { width: 100%; margin-bottom: 25px; }
+    .nav-links { flex-direction: column; gap: 15px; }
+}

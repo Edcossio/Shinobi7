@@ -1,0 +1,273 @@
+/* ==========================================================================
+   ZTE F680 ROUTER WEBUI THEME (styles/admin.css)
+   ========================================================================== */
+:root {
+    --zte-green: #4ea72a;
+    --zte-green-dark: #3b841f;
+    --zte-green-light: #b4e098;
+    --zte-bg-gray: #f4f4f4;
+    --zte-header-gray: #e2e2e2;
+    --zte-border: #cccccc;
+    --zte-text: #222222;
+    --zte-text-muted: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--zte-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Banner Verde Superior --- */
+.zte-topbar {
+    background-color: var(--zte-green);
+    color: #ffffff;
+    height: 40px;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.zte-model {
+    font-size: 0.95rem;
+    font-weight: normal;
+}
+
+/* --- Estructura Principal --- */
+.zte-wrapper {
+    display: flex;
+    flex-grow: 1;
+}
+
+/* --- Menú Lateral (Árbol ZTE) --- */
+.admin-sidebar {
+    width: 220px;
+    background-color: #ffffff;
+    border-right: 1px solid var(--zte-border);
+    flex-shrink: 0;
+}
+
+.admin-nav {
+    list-style: none;
+}
+
+.nav-cat-title {
+    padding: 8px 12px;
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: var(--zte-text);
+    border-bottom: 1px solid #eeeeee;
+    background-color: #fafafa;
+}
+
+.admin-nav-link {
+    display: block;
+    padding: 8px 12px 8px 24px;
+    color: var(--zte-text);
+    text-decoration: none;
+    font-size: 0.82rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-nav-link:hover {
+    background-color: #f0f0f0;
+}
+
+/* Estado Seleccionado Verde Router */
+.nav-group-active {
+    background-color: var(--zte-green-dark) !important;
+    color: #ffffff !important;
+}
+
+.admin-nav-link.active {
+    background-color: var(--zte-green-light);
+    color: #000000;
+    font-weight: bold;
+}
+
+/* --- Panel de Trabajo Derecho --- */
+.admin-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+/* Breadcrumb Path Gray Bar */
+.zte-breadcrumb {
+    background-color: var(--zte-header-gray);
+    border-bottom: 1px solid var(--zte-border);
+    padding: 6px 15px;
+    font-size: 0.8rem;
+    color: var(--zte-text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.zte-breadcrumb a {
+    color: var(--zte-text);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.zte-content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.zte-panel {
+    background-color: #ffffff;
+    border: 1px solid var(--zte-border);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.zte-panel h3 {
+    font-size: 0.9rem;
+    color: var(--zte-green-dark);
+    border-bottom: 2px solid var(--zte-green);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+/* --- Formulario Clásico Estilo Router --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.78rem;
+    font-weight: bold;
+    color: var(--zte-text);
+}
+
+.form-control {
+    padding: 5px 8px;
+    border: 1px solid var(--zte-border);
+    font-size: 0.82rem;
+    background-color: #ffffff;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--zte-green);
+    box-shadow: 0 0 3px var(--zte-green-light);
+}
+
+/* --- Botones --- */
+.btn-admin {
+    padding: 6px 16px;
+    border: 1px solid var(--zte-border);
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--zte-bg-gray);
+    color: var(--zte-text);
+}
+
+.btn-admin:hover {
+    background-color: var(--zte-header-gray);
+}
+
+.btn-admin-primary {
+    background-color: var(--zte-green);
+    color: #ffffff;
+    border-color: var(--zte-green-dark);
+}
+
+.btn-admin-primary:hover {
+    background-color: var(--zte-green-dark);
+}
+
+.btn-admin-danger {
+    background-color: #d9534f;
+    color: #ffffff;
+    border-color: #d43f3a;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+}
+
+/* --- Tablas --- */
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.admin-table th {
+    background-color: var(--zte-header-gray);
+    border: 1px solid var(--zte-border);
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.admin-table td {
+    border: 1px solid var(--zte-border);
+    padding: 6px 10px;
+    background-color: #ffffff;
+}
+
+.admin-table tbody tr:nth-child(even) td {
+    background-color: #fafafa;
+}
+
+/* --- Badges --- */
+.badge-status {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.badge-ok {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.badge-critical {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+.badge-role-admin {
+    background-color: #d9edf7;
+    color: #31708f;
+    border: 1px solid #bce8f1;
+}
+
+.badge-role-vendor {
+    background-color: #fcf8e3;
+    color: #8a6d3b;
+    border: 1px solid #faebcc;
+}

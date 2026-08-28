@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - CollectorVault</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+    <!-- Header Estandarizado -->
+    <header class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="logo">Collector<span>Vault</span></h1>
+            <nav>
+                <ul class="nav-links d-flex">
+                    <li><a href="index.html" class="nav-item">HOME</a></li>
+                    <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
+                    <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
+                    <li><a href="login.html" class="nav-item active">INICIAR SESIÓN</a></li>
+                    <li><a href="carrito.html" class="nav-item">🛒 CARRITO (0)</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Formulario de Login -->
+    <main class="container mt-5" style="max-width: 480px;">
+        <section class="card p-4">
+            <h2 class="title-accent text-center mb-4">Iniciar Sesión</h2>
+
+            <form id="form-login">
+                <div style="margin-bottom: 20px;">
+                    <label for="correo" style="display:block; font-weight:bold; margin-bottom:8px; font-size: 0.9rem;">
+                        CORREO ELECTRÓNICO:
+                    </label>
+                    <input type="email" id="correo" class="w-100" placeholder="ejemplo@domino.com"
+                        style="padding: 12px; border: 3px solid var(--border-dark); font-weight: bold;" required>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <label for="password"
+                        style="display:block; font-weight:bold; margin-bottom:8px; font-size: 0.9rem;">
+                        CONTRASEÑA:
+                    </label>
+                    <input type="password" id="password" class="w-100" placeholder="8 a 32 caracteres"
+                        style="padding: 12px; border: 3px solid var(--border-dark); font-weight: bold;" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="padding: 14px; font-size: 1rem;">
+                    Ingresar
+                </button>
+            </form>
+
+            <!-- Enlace al Formulario de Registro -->
+            <div class="text-center"
+                style="margin-top: 25px; padding-top: 20px; border-top: 2px dashed var(--border-dark);">
+                <p style="color: var(--text-muted); font-size: 0.95rem; font-weight: 600;">
+                    ¿Aún no tienes una cuenta?
+                </p>
+                <a href="registro.html"
+                    style="display: inline-block; margin-top: 8px; color: var(--text-main); background-color: var(--accent-yellow); padding: 8px 16px; border: 2px solid var(--border-dark); font-weight: 900; text-decoration: none; box-shadow: 2px 2px 0px var(--border-dark);">
+                    ¡Regístrate aquí!
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer text-center mt-5">
+        <p>&copy; 2026 CollectorVault</p>
+    </footer>
+    <script src="js/data.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/catalogo.js"></script>
+    <script src="js/carrito.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

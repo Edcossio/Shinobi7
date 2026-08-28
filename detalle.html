@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Figura - CollectorVault</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="logo">Collector<span>Vault</span></h1>
+            <nav>
+                <ul class="nav-links d-flex">
+                    <li><a href="index.html" class="nav-item">HOME</a></li>
+                    <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
+                    <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
+                    <li><a href="login.html" class="nav-item">INICIAR SESIÓN</a></li>
+                    <li><a href="carrito.html" class="nav-item">🛒 CARRITO (0)</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mt-5">
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Home > Categoría X > Zekrom & Reshiram Edition</p>
+
+        <div class="row" style="background: white; padding: 30px; border-radius: 4px; border: 1px solid #E0E0E0;">
+            <div class="col-md-4" style="width: 50%;">
+                <img src="img/figura-1.jpg" style="width: 100%; border-radius: 4px;" alt="Figura Detalle">
+            </div>
+            <div class="col-md-4" style="width: 50%; padding-left: 30px;">
+                <h2 style="font-size: 2rem; margin-bottom: 10px;">Zekrom & Reshiram Collector Edition</h2>
+                <h3 class="price-tag" style="font-size: 1.8rem; margin-bottom: 20px;">$189.990</h3>
+                <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;">
+                    Figura estática de edición limitada fabricada en PVC de alta calidad. Pintada a mano con detalles
+                    translúcidos en las turbinas elementales.
+                </p>
+                <div style="margin-bottom: 20px;">
+                    <label for="cantidad"
+                        style="font-weight: bold; display: block; margin-bottom: 5px;">Cantidad:</label>
+                    <input type="number" id="cantidad" value="1" min="1"
+                        style="padding: 10px; width: 80px; border: 1px solid #ccc; border-radius: 4px;">
+                </div>
+                <button class="btn btn-primary w-100" style="padding: 15px; font-size: 1rem;">Añadir al Carrito</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background-color: #FFFFFF; border-top: 1px solid #E0E0E0; padding: 2rem 0;" class="mt-5 text-center">
+        <div class="container">
+            <p style="color: var(--text-muted);">&copy; 2026 CollectorVault</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/catalogo.js"></script>
+    <script src="js/carrito.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Tienda de Coleccionables</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+
+    <!-- Menú de Navegación Superior -->
+    <header class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="logo">Collector<span>Vault</span></h1>
+            <nav>
+                <ul class="nav-links d-flex">
+                    <li><a href="index.html" class="nav-item">HOME</a></li>
+                    <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
+                    <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
+                    <li><a href="login.html" class="nav-item">INICIAR SESIÓN</a></li>
+                    <li><a href="carrito.html" class="nav-item">🛒 CARRITO (0)</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal del Home -->
+    <main class="container mt-5">
+
+        <!-- Sección de Bienvenida / Banner Principal (Hero) -->
+        <section class="hero-section text-center mb-5 p-4"
+            style="background: white; border-radius: 8px; border: 1px solid #E0E0E0;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 15px;">Figuras de Colección Edición Limitada</h2>
+            <p style="color: var(--text-muted); margin-bottom: 25px; font-size: 1.1rem;">
+                Explora el universo de tus animes y videojuegos favoritos con estándares de calidad premium.
+            </p>
+            <a href="productos.html" class="btn btn-primary"
+                style="text-decoration: none; display: inline-block; padding: 12px 30px;">
+                Ver Catálogo Completo
+            </a>
+        </section>
+
+        <!-- Sección de "Destacados del Mes" -->
+        <section class="destacados mb-5">
+            <h3
+                style="margin-bottom: 20px; text-transform: uppercase; border-left: 4px solid var(--accent-yellow); padding-left: 10px;">
+                Lanzamientos Destacados
+            </h3>
+
+            <div class="row" id="contenedor-destacados">
+                <!-- Tarjeta de ejemplo 1 -->
+                <article class="col-md-3 mb-4">
+                    <div class="card">
+                        <span class="badge-new">NUEVO</span>
+                        <img src="img/figura-1.jpg" class="card-img-top" alt="Figura Coleccionable">
+                        <div class="card-body">
+                            <h4 class="card-title text-truncate">Zekrom & Reshiram Collector Edition</h4>
+                            <p class="card-brand">Good Smile Company</p>
+                            <p class="price-tag">$189.990</p>
+                            <a href="detalle.html" class="btn btn-primary w-100 text-center"
+                                style="text-decoration: none; display: block;">Ver Detalle</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Tarjeta de ejemplo 2 -->
+                <article class="col-md-3 mb-4">
+                    <div class="card">
+                        <span class="badge-new" style="background-color: var(--accent-blue);">PRE-VENTA</span>
+                        <img src="img/figura-2.jpg" class="card-img-top" alt="Figura Coleccionable">
+                        <div class="card-body">
+                            <h4 class="card-title text-truncate">Nendoroid Rem - Re:Zero</h4>
+                            <p class="card-brand">Max Factory</p>
+                            <p class="price-tag">$45.990</p>
+                            <a href="detalle.html" class="btn btn-primary w-100 text-center"
+                                style="text-decoration: none; display: block;">Ver Detalle</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Informativo -->
+    <footer style="background-color: #FFFFFF; border-top: 1px solid #E0E0E0; padding: 2rem 0;" class="mt-5 text-center">
+        <div class="container">
+            <p style="color: var(--text-muted);">&copy; 2026 CollectorVault. Todos los derechos reservados. Desarrollado
+                para DSY1104.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/catalogo.js"></script>
+    <script src="js/carrito.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+
+# gitignore
+
+
+# Dependencias del sistema operativo (Ocultos)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Carpetas de configuración de Editores/IDEs
+.vscode/
+.idea/
+*.suo
+*.sln
+
+# Archivos temporales y de registro
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Archivos comprimidos pesados (por si haces respaldos locales)
+*.zip
+*.rar
+*.tar.gz
+
+# ***
+node_modules/
