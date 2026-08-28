@@ -80,16 +80,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- NUEVO: Control Dinámico del Navbar ---
     function actualizarInterfazSesion() {
         const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
-        const enlacesNav = document.querySelectorAll(".nav-item");
+        const navLinks = document.querySelector(".nav-links");
 
-        if (sesionActiva) {
+        if (sesionActiva && navLinks) {
+            // Si el usuario es Administrador, agregamos un acceso directo al panel en la barra pública
+            if (sesionActiva.rol === "Administrador" && !document.getElementById("link-panel-admin")) {
+                const liAdmin = document.createElement("li");
+                liAdmin.innerHTML = `<a href="admin_home.html" id="link-panel-admin" class="nav-item fw-bold text-danger" style="background: #ffebee; border-radius: 4px; padding: 5px 10px;">ADMIN</a>`;
+                navLinks.insertBefore(liAdmin, navLinks.firstChild);
+            }
+
+            // Cambiar "INICIAR SESIÓN" por "CERRAR SESIÓN"
+            const enlacesNav = document.querySelectorAll(".nav-item");
             enlacesNav.forEach(el => {
                 if (el.textContent.includes("INICIAR SESIÓN")) {
-                    el.textContent = `CERRAR SESIÓN (${sesionActiva.nombre.split(" ")[0]})`;
+                    el.textContent = "CERRAR SESIÓN"; // <-- Texto limpio sin el nombre
                     el.href = "#";
-                    el.classList.add("text-danger"); // Le damos color rojo para destacar
+                    el.classList.add("text-danger");
 
-                    // Lógica para cerrar sesión
                     el.addEventListener("click", (e) => {
                         e.preventDefault();
                         sessionStorage.removeItem("sesionActiva");

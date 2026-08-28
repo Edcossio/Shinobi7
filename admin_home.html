@@ -22,20 +22,22 @@
     <div class="zte-wrapper">
         <aside class="admin-sidebar">
             <ul class="admin-nav">
-                <li class="nav-cat-title nav-group-active">-Administracion</li>
-                <li><a href="admin_home.html" class="admin-nav-link"> Dashboard</a></li>
+                <li class="nav-cat-title nav-group-active">- Administracion</li>
+                <li><a href="admin_home.html" class="admin-nav-link active"> Dashboard</a></li>
                 <li><a href="admin_productos.html" class="admin-nav-link"> Gestion Productos</a></li>
-                <li><a href="admin_usuarios.html" class="admin-nav-link active"> Gestion Usuarios</a></li>
-                <li><a href="index.html" class="admin-nav-link logout"> Cerrar Sesión</a></li>
+                <li><a href="admin_usuarios.html" class="admin-nav-link"> Gestion Usuarios</a></li>
+                <hr class="text-white-50 my-2">
+                <li><a href="index.html" class="admin-nav-link"> Volver al Home</a></li>+
+
+                </li>
             </ul>
         </aside>
 
         <main class="admin-main">
             <div class="zte-breadcrumb">
                 <span>Path: Administration - System Management</span>
-                <a href="index.html">Logout</a>
+                <a href="#" id="btn-cerrar-sesion-top">Logout</a>
             </div>
-
             <div class="zte-content">
                 <section class="zte-panel">
                     <h3>System Overview</h3>
@@ -48,6 +50,24 @@
             </div>
         </main>
     </div>
+
+    <!-- Script específico para manejar el cierre de sesión seguro desde el panel -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const cerrarSesion = (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem("sesionActiva");
+                window.location.href = "login.html";
+            };
+
+            const btn1 = document.getElementById("btn-cerrar-sesion");
+            const btn2 = document.getElementById("btn-cerrar-sesion-top");
+
+            if (btn1) btn1.addEventListener("click", cerrarSesion);
+            if (btn2) btn2.addEventListener("click", cerrarSesion);
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Tus scripts modulares -->
