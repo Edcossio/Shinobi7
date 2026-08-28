@@ -42,8 +42,20 @@ const productosIniciales = [
 ];
 
 const usuariosIniciales = [
-    { run: "111111111", nombre: "Jose Pizarro", correo: "jose@7shino.cl", rol: "Administrador" },
-    { run: "184567890", nombre: "Camila Soto", correo: "camila@gmail.com", rol: "Vendedor" }
+    {
+        run: "111111111",
+        nombre: "Jose Pizarro",
+        correo: "jose@7shino.cl",
+        rol: "Administrador",
+        password: "admin1234" // Contraseña para el admin
+    },
+    {
+        run: "184567890",
+        nombre: "Camila Soto",
+        correo: "camila@gmail.com",
+        rol: "Vendedor",
+        password: "password123" // Contraseña para el vendedor
+    }
 ];
 
 const regionesYComunas = [
