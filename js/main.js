@@ -132,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 8. Listener Formulario Registro
     // 8. Listener Formulario Registro (Blindado contra duplicados y con contraseña codificada)
     const formRegistro = document.getElementById("form-registro");
     if (formRegistro) {
