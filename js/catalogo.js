@@ -3,45 +3,51 @@
 // ============================================================
 
 function renderizarCatalogo(listaOpcional, contenedorId) {
-    const contenedor = document.getElementById(contenedorId);
+    const contenedor = document.getElementById(contenedorId || "contenedor-productos");
     if (!contenedor) return;
 
     const lista = listaOpcional || getProductosBD();
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
-        contenedor.innerHTML = `<div class="col-12"><div class="alert alert-warning text-center border-2 border-dark fw-bold">No hay productos disponibles en el catálogo.</div></div>`;
+        contenedor.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-warning text-center border-3 border-dark fw-bold p-4">
+                    NO SE ENCONTRARON PRODUCTOS QUE COINCIDAN CON TU BÚSQUEDA.
+                </div>
+            </div>
+        `;
         return;
     }
 
     lista.forEach(prod => {
         const precioFormateado = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(prod.precio);
         const esCritico = prod.stock <= (prod.stockCritico || 3);
-        
-        // Evalúa si existe el arreglo 'imagenes' o la propiedad 'imagen'
-        const imagenPrincipal = Array.isArray(prod.imagenes) 
-            ? prod.imagenes[0] 
+
+        const imagenPrincipal = Array.isArray(prod.imagenes)
+            ? prod.imagenes[0]
             : (prod.imagen || 'images/placeholder.jpg');
 
         const cardHTML = `
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex align-items-stretch mb-4">
+            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
                 <div class="card w-100 shadow-sm border-3">
                     <span class="badge ${esCritico ? 'bg-danger text-white' : 'bg-warning text-dark'} border border-dark border-2 fw-black text-uppercase position-absolute top-0 end-0 m-2">
-                        ${esCritico ? 'ÚLTIMOS DISPONIBLES' : '● DISPONIBLE'}
+                        ${esCritico ? '[!] STOCK CRÍTICO' : '● DISPONIBLE'}
                     </span>
                     <a href="detalle.html?id=${prod.id}">
-                        <img src="${imagenPrincipal}" class="card-img-top p-2" alt="${prod.nombre}" style="height: 240px; object-fit: contain; background: #fff;">
+                        <img src="${imagenPrincipal}" class="card-img-top p-3" alt="${prod.nombre}" style="height: 280px; object-fit: contain; background: #fff;">
                     </a>
                     <div class="card-body d-flex flex-column justify-content-between p-3">
                         <div>
+                            <span class="badge bg-dark text-white border border-dark mb-2 text-uppercase fw-bold">${prod.categoria || 'Anime'}</span>
                             <a href="detalle.html?id=${prod.id}" class="text-decoration-none text-dark">
                                 <h5 class="card-title text-truncate fs-6 fw-bold text-uppercase mb-1">${prod.nombre}</h5>
                             </a>
                             <p class="text-muted small mb-2">${prod.marca}</p>
                         </div>
                         <div>
-                            <p class="fs-5 fw-bold text-primary mb-3">${precioFormateado}</p>
-                            <button onclick="agregarAlCarrito('${prod.id}')" class="btn btn-primary w-100 fw-bold text-uppercase border-2 border-dark">
+                            <p class="fs-4 fw-bold text-primary mb-3">${precioFormateado}</p>
+                            <button onclick="agregarAlCarrito('${prod.id}')" class="btn btn-primary w-100 fw-bold text-uppercase border-2 border-dark shadow-sm">
                                 Añadir al Carrito
                             </button>
                         </div>
@@ -62,7 +68,7 @@ function cambiarImagenPrincipal(src, elemento) {
     if (imgPrincipal && typeof src === "string") {
         imgPrincipal.src = src;
     }
-    
+
     document.querySelectorAll('.img-miniatura').forEach(img => img.classList.remove('active'));
     if (elemento && elemento.classList) {
         elemento.classList.add('active');
@@ -98,7 +104,7 @@ function cargarDetalleProducto() {
     const recomendadosHTML = recomendados.map(rec => {
         const recPrecio = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(rec.precio);
         const recImg = Array.isArray(rec.imagenes) ? rec.imagenes[0] : (rec.imagen || 'images/placeholder.jpg');
-        
+
         return `
             <div class="col-12 col-sm-6 col-md-3">
                 <div class="card h-100 border-3 shadow-sm">
@@ -215,13 +221,57 @@ function agregarAlCarritoDetalle(productoId) {
     if (item) {
         item.cantidad += cantidad;
     } else {
-        carrito.push({ 
-            ...prod, 
-            imagen: imagenUrl, 
-            cantidad: cantidad 
+        carrito.push({
+            ...prod,
+            imagen: imagenUrl,
+            cantidad: cantidad
         });
     }
 
     guardarCarrito(carrito);
     alert(`Se añadieron ${cantidad} unidad(es) de "${prod.nombre}" al carrito.`);
+}
+
+function filtrarProductos() {
+    const textoBuscador = document.getElementById("buscar-producto")?.value.toLowerCase().trim() || "";
+    const categoriaSel = document.getElementById("filtro-categoria")?.value || "";
+    const ordenSel = document.getElementById("orden-precio")?.value || "defecto";
+    const contadorBadge = document.getElementById("contador-productos");
+
+    // Verificar si el usuario ha interactuado con alguno de los filtros
+    const hayFiltroActivo = textoBuscador !== "" || categoriaSel !== "" || ordenSel !== "defecto";
+
+    let resultados = getProductosBD();
+
+    // 1. Filtrar por texto (nombre o marca)
+    if (textoBuscador) {
+        resultados = resultados.filter(p =>
+            p.nombre.toLowerCase().includes(textoBuscador) ||
+            p.marca.toLowerCase().includes(textoBuscador)
+        );
+    }
+
+    // 2. Filtrar por Categoría
+    if (categoriaSel) {
+        resultados = resultados.filter(p => p.categoria === categoriaSel);
+    }
+
+    // 3. Ordenar por precio
+    if (ordenSel === "menor-mayor") {
+        resultados.sort((a, b) => a.precio - b.precio);
+    } else if (ordenSel === "mayor-menor") {
+        resultados.sort((a, b) => b.precio - a.precio);
+    }
+
+    // Mostrar u ocultar el badge del contador según la interacción
+    if (contadorBadge) {
+        if (hayFiltroActivo) {
+            contadorBadge.textContent = `${resultados.length} FIGURAS ENCONTRADAS`;
+            contadorBadge.classList.remove("d-none");
+        } else {
+            contadorBadge.classList.add("d-none");
+        }
+    }
+
+    renderizarCatalogo(resultados, "contenedor-productos");
 }
