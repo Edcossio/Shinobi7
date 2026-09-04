@@ -5,11 +5,16 @@
 const productosIniciales = [
     {
         id: "FIG-001",
-        nombre: "Zekrom & Reshiram Edition",
+        nombre: "Reshiram Collector Edition",
         marca: "Good Smile Company",
         precio: 189990,
         categoria: "Pokemon",
-        imagen: "https://via.placeholder.com/300x300?text=Zekrom+Reshiram",
+        imagenes: [
+            "images/reshiram_1.webp",
+            "images/reshiram_2.webp",
+            "images/reshiram_3.webp",
+            "images/reshiram_4.webp"
+        ],
         destacado: true,
         stock: 5,
         stockCritico: 3,
@@ -21,11 +26,16 @@ const productosIniciales = [
         marca: "Good Smile Company",
         precio: 45990,
         categoria: "Anime",
-        imagen: "https://via.placeholder.com/300x300?text=Rem+Nendoroid",
+        imagenes: [
+            "images/rem_1.jpeg",
+            "images/rem_2.png",
+            "images/rem_3.png",
+            "images/rem_accesories.png"
+        ],
         destacado: true,
         stock: 2,
         stockCritico: 3,
-        descripcion: "Figura articulada con rostros intercambiables."
+        descripcion: "Figura articulada con rostros intercambiables y accesorios oficiales."
     },
     {
         id: "FIG-003",
@@ -33,11 +43,62 @@ const productosIniciales = [
         marca: "Kadokawa",
         precio: 145000,
         categoria: "Anime",
-        imagen: "https://via.placeholder.com/300x300?text=Emilia+Scale",
+        imagenes: [
+            "images/emilia_1.webp",
+            "images/emilia_2.webp"
+        ],
         destacado: false,
         stock: 8,
         stockCritico: 3,
-        descripcion: "Estatua detallada a escala 1/7."
+        descripcion: "Estatua detallada a escala 1/7 en fino PVC con base acrílica."
+    },
+    {
+        id: "FIG-004",
+        nombre: "Satoru Gojo - Jujutsu Kaisen",
+        marca: "Max Factory",
+        precio: 68990,
+        categoria: "Anime",
+        imagenes: [
+            "images/satoru_1.jpg",
+            "images/satoru_2.jpg",
+            "images/satoru_3.jpg"
+        ],
+        destacado: true,
+        stock: 4,
+        stockCritico: 2,
+        descripcion: "Figura articulada que permite recrear poses de expansión de dominio."
+    },
+    {
+        id: "FIG-005",
+        nombre: "Tanjiro Kamado Hinokami Kagura",
+        marca: "Aniplex",
+        precio: 129990,
+        categoria: "Anime",
+        imagenes: [
+            "images/tanjiro_1.jpg",
+            "images/tanjiro_2.jpg",
+            "images/tanjiro_3.jpg"
+        ],
+        destacado: true,
+        stock: 1,
+        stockCritico: 3,
+        descripcion: "Estatua con efectos de fuego dinámicos y postura de combate."
+    },
+    {
+        id: "FIG-006",
+        nombre: "Hatsune Miku Symphony",
+        marca: "Good Smile Company",
+        precio: 159990,
+        categoria: "Vocaloid",
+        imagenes: [
+            "images/miku_1.jpg",
+            "images/miku_2.webp",
+            "images/miku_3.jpg"
+        ],
+        destacado: false,
+        stock: 6,
+        stockCritico: 2,
+        descripcion: "Edición especial a escala con vestido formal y acabados de alta calidad."
     }
 ];
 
