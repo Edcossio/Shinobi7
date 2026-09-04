@@ -6,11 +6,12 @@
     --card-bg: #FFFFFF;
     --text-main: #121212;
     --text-muted: #555555;
-    
+
     /* Acentos */
-    --accent-blue: #0091EA; 
-    --accent-red: #FF3D00;  
-    --accent-yellow: #FFD700; /* Pikachu Gold */
+    --accent-blue: #0091EA;
+    --accent-red: #FF3D00;
+    --accent-yellow: #FFD700;
+    /* Pikachu Gold */
     --border-dark: #121212;
 }
 
@@ -35,11 +36,14 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-.logo span { color: var(--accent-blue); }
 
-.nav-links { 
-    list-style: none; 
-    gap: 30px; 
+.logo span {
+    color: var(--accent-blue);
+}
+
+.nav-links {
+    list-style: none;
+    gap: 30px;
     margin-bottom: 0;
     padding-left: 0;
 }
@@ -54,7 +58,8 @@ body {
     transition: all 0.2s ease;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
     color: var(--accent-blue);
     border-bottom: 3px solid var(--accent-yellow);
 }
@@ -66,7 +71,8 @@ body {
 .card {
     background-color: var(--card-bg);
     border: 3px solid var(--border-dark) !important;
-    border-radius: 0px !important; /* Bordes rectos neo-brutalistas */
+    border-radius: 0px !important;
+    /* Bordes rectos neo-brutalistas */
     box-shadow: 5px 5px 0px var(--border-dark);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
@@ -137,4 +143,46 @@ body {
     background: #FFFFFF;
     border-top: 3px solid var(--border-dark);
     padding: 2rem 0;
+}
+
+/* Responsividad global para imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Imágenes en las tarjetas del catálogo */
+.card-img-top {
+    width: 100%;
+    height: 260px;
+    /* Altura fija uniforme para las tarjetas */
+    object-fit: contain !important;
+    /* Muestra la imagen completa sin recortarla */
+    background-color: #ffffff;
+    /* Fondo blanco para rellenar espacios vacíos */
+    padding: 12px;
+    /* Margen interno para que respire dentro de la tarjeta */
+    border-bottom: 3px solid var(--border-dark);
+}
+
+/* Galería de miniaturas en la vista detalle */
+.img-miniatura {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    background-color: #ffffff;
+    border: 2px solid var(--border-dark);
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.img-miniatura:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.img-miniatura.active {
+    border: 3px solid var(--accent-yellow) !important;
+    box-shadow: 2px 2px 0px var(--border-dark);
 }
