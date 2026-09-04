@@ -32,7 +32,7 @@ function renderizarCatalogo(listaOpcional, contenedorId) {
             <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch">
                 <div class="card w-100 shadow-sm border-3">
                     <span class="badge ${esCritico ? 'bg-danger text-white' : 'bg-warning text-dark'} border border-dark border-2 fw-black text-uppercase position-absolute top-0 end-0 m-2">
-                        ${esCritico ? '[!] STOCK CRÍTICO' : '● DISPONIBLE'}
+                        ${esCritico ? '● ÚLTIMOS DISPONIBLES' : '● DISPONIBLE'}
                     </span>
                     <a href="detalle.html?id=${prod.id}">
                         <img src="${imagenPrincipal}" class="card-img-top p-3" alt="${prod.nombre}" style="height: 280px; object-fit: contain; background: #fff;">
