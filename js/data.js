@@ -4,6 +4,42 @@
 
 const productosIniciales = [
     {
+        id: "PROX-001",
+        nombre: "Kite - Crazy Slots #2",
+        precio: 52990,
+        categoria: "HUNTER X HUNTER",
+        fabricante: "Pop Up Parade",
+        stock: 0,
+        esProximo: true,
+        llegada: "Octubre - Diciembre 2026",
+        imagenes: ["images/kite_1.jpg"],
+        descripcion: "Espectacular figura detallada de Kite empuñando la guadaña de su habilidad Crazy Slots. Edición limitada de alta precisión."
+    },
+    {
+        id: "PROX-002",
+        nombre: "Shigeo Kageyama (Mob)",
+        precio: 48990,
+        categoria: "MOB PSYCHO 100",
+        fabricante: "Nendoroid",
+        stock: 0,
+        esProximo: true,
+        llegada: "Enero - Marzo 2027",
+        imagenes: ["images/mob_1.jpg"],
+        descripcion: "Figura articulada con rostros intercambiables y efectos de energía psíquica. Incluye base de soporte y accesorios exclusivos."
+    },
+    {
+        id: "PROX-003",
+        nombre: "Naruto Uzumaki - Battle Ver.",
+        precio: 39990,
+        categoria: "NARUTO SHIPPUDEN",
+        fabricante: "Vibration Stars",
+        stock: 0,
+        esProximo: true,
+        llegada: "Octubre 2026",
+        imagenes: ["images/naruto_1.jpg"],
+        descripcion: "Dinámica postura de combate con kunai en mano. Pintura de sombreado especial inspirado en el manga original."
+    },
+    {
         id: "FIG-001",
         nombre: "Reshiram Collector Edition",
         marca: "Good Smile Company",

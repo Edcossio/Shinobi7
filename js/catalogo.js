@@ -6,7 +6,10 @@ function renderizarCatalogo(listaOpcional, contenedorId) {
     const contenedor = document.getElementById(contenedorId || "contenedor-productos");
     if (!contenedor) return;
 
-    const lista = listaOpcional || getProductosBD();
+    // Se obtienen los productos y se descartan los que son próximos lanzamientos
+    const productosBase = listaOpcional || getProductosBD();
+    const lista = productosBase.filter(p => !p.esProximo);
+
     contenedor.innerHTML = "";
 
     if (lista.length === 0) {
@@ -43,7 +46,7 @@ function renderizarCatalogo(listaOpcional, contenedorId) {
                             <a href="detalle.html?id=${prod.id}" class="text-decoration-none text-dark">
                                 <h5 class="card-title text-truncate fs-6 fw-bold text-uppercase mb-1">${prod.nombre}</h5>
                             </a>
-                            <p class="text-muted small mb-2">${prod.marca}</p>
+                            <p class="text-muted small mb-2">${prod.marca || ''}</p>
                         </div>
                         <div>
                             <p class="fs-4 fw-bold text-primary mb-3">${precioFormateado}</p>
@@ -92,7 +95,8 @@ function cargarDetalleProducto() {
     const imagenPrincipal = listaImagenes[0];
     const esCritico = prod.stock <= (prod.stockCritico || 3);
 
-    const recomendados = lista.filter(p => p.id !== prod.id).slice(0, 4);
+    // Recomendados solo de productos disponibles (sin pre-orders)
+    const recomendados = lista.filter(p => p.id !== prod.id && !p.esProximo).slice(0, 4);
 
     const miniaturasHTML = listaImagenes.map((imgSrc, index) => `
         <img src="${imgSrc}" 
@@ -116,7 +120,7 @@ function cargarDetalleProducto() {
                             <a href="detalle.html?id=${rec.id}" class="text-decoration-none text-dark">
                                 <h6 class="fw-bold text-truncate text-uppercase mb-1">${rec.nombre}</h6>
                             </a>
-                            <p class="text-muted small mb-2">${rec.marca}</p>
+                            <p class="text-muted small mb-2">${rec.marca || ''}</p>
                         </div>
                         <div>
                             <p class="fw-bold text-primary mb-2">${recPrecio}</p>
@@ -161,7 +165,7 @@ function cargarDetalleProducto() {
                     </div>
 
                     <h2 class="fw-black text-uppercase display-6 mb-1">${prod.nombre}</h2>
-                    <p class="text-muted fw-bold mb-3">FABRICANTE: <span class="text-dark text-uppercase">${prod.marca}</span> | CÓD: <span class="text-dark">${prod.id}</span></p>
+                    <p class="text-muted fw-bold mb-3">FABRICANTE: <span class="text-dark text-uppercase">${prod.marca || prod.fabricante || 'Oficial'}</span> | CÓD: <span class="text-dark">${prod.id}</span></p>
 
                     <div class="p-3 bg-light border border-dark border-3 mb-4">
                         <span class="fs-6 text-muted d-block fw-bold text-uppercase">Precio Contado / Débito:</span>
@@ -238,16 +242,16 @@ function filtrarProductos() {
     const ordenSel = document.getElementById("orden-precio")?.value || "defecto";
     const contadorBadge = document.getElementById("contador-productos");
 
-    // Verificar si el usuario ha interactuado con alguno de los filtros
     const hayFiltroActivo = textoBuscador !== "" || categoriaSel !== "" || ordenSel !== "defecto";
 
-    let resultados = getProductosBD();
+    // Filtrar la base de datos excluyendo los 'esProximo'
+    let resultados = getProductosBD().filter(p => !p.esProximo);
 
     // 1. Filtrar por texto (nombre o marca)
     if (textoBuscador) {
         resultados = resultados.filter(p =>
             p.nombre.toLowerCase().includes(textoBuscador) ||
-            p.marca.toLowerCase().includes(textoBuscador)
+            (p.marca && p.marca.toLowerCase().includes(textoBuscador))
         );
     }
 
@@ -263,7 +267,6 @@ function filtrarProductos() {
         resultados.sort((a, b) => b.precio - a.precio);
     }
 
-    // Mostrar u ocultar el badge del contador según la interacción
     if (contadorBadge) {
         if (hayFiltroActivo) {
             contadorBadge.textContent = `${resultados.length} FIGURAS ENCONTRADAS`;
@@ -275,3 +278,62 @@ function filtrarProductos() {
 
     renderizarCatalogo(resultados, "contenedor-productos");
 }
+
+function renderizarCarruselProximos() {
+    const contenedorItems = document.getElementById("carrusel-items");
+    const contenedorIndicadores = document.getElementById("carrusel-indicadores");
+
+    if (!contenedorItems || !contenedorIndicadores) return;
+
+    const productosBD = typeof getProductosBD === "function" ? getProductosBD() : [];
+    const proximos = productosBD.filter(p => p.esProximo === true);
+
+    if (proximos.length === 0) return;
+
+    contenedorItems.innerHTML = "";
+    contenedorIndicadores.innerHTML = "";
+
+    proximos.forEach((prod, index) => {
+        const isActive = index === 0 ? "active" : "";
+        const ariaCurrent = index === 0 ? 'aria-current="true"' : '';
+
+        // Indicador
+        contenedorIndicadores.innerHTML += `
+            <button type="button" 
+                    data-bs-target="#carruselProximos" 
+                    data-bs-slide-to="${index}" 
+                    class="${isActive}" 
+                    ${ariaCurrent} 
+                    aria-label="Diapositiva ${index + 1}">
+            </button>
+        `;
+
+        // Item del carrusel
+        contenedorItems.innerHTML += `
+            <div class="carousel-item ${isActive}">
+                <div class="row align-items-center g-4">
+                    <div class="col-12 col-md-5 text-center">
+                        <div class="carousel-img-wrapper">
+                            <img src="${prod.imagenes ? prod.imagenes[0] : prod.imagen}" alt="${prod.nombre}">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-7">
+                        <span class="badge bg-danger text-white border border-dark mb-2 fw-bold">RESERVA ABIERTA</span>
+                        <h3 class="fw-black text-uppercase fs-2 mb-1">${prod.nombre}</h3>
+                        <p class="text-muted fw-bold mb-2">${prod.categoria} — ${prod.fabricante || 'Coleccionable'}</p>
+                        <p class="mb-3">${prod.descripcion}</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="fs-3 fw-bold text-primary">$${prod.precio.toLocaleString('es-CL')}</span>
+                            <span class="badge bg-dark text-white p-2 border border-dark">Llegada: ${prod.llegada || 'Próximamente'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// Ejecutar al cargar el documento
+document.addEventListener("DOMContentLoaded", () => {
+    renderizarCarruselProximos();
+});

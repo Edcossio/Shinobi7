@@ -289,3 +289,68 @@ img {
         margin: 0;
     }
 }
+
+/* ============================================================
+   CARRUSEL NEO-BRUTALISTA DE PRÓXIMOS LANZAMIENTOS
+   ============================================================ */
+
+.carousel-brutal {
+    border: 3px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.carousel-brutal .carousel-item {
+    min-height: 320px;
+}
+
+/* Control estricto del tamaño de la imagen */
+.carousel-img-wrapper {
+    height: 250px;
+    /* Evita que la imagen se vea gigante */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.carousel-img-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Botones de navegación (Flechas) */
+.carousel-brutal .carousel-control-prev,
+.carousel-brutal .carousel-control-next {
+    width: 50px;
+    opacity: 1;
+}
+
+.carousel-brutal .carousel-control-prev-icon,
+.carousel-brutal .carousel-control-next-icon {
+    background-color: #000000;
+    border: 2px solid #000000;
+    padding: 15px;
+    background-size: 50%;
+}
+
+/* Indicadores inferiores (Rayitas) */
+.carousel-brutal .carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+.carousel-brutal .carousel-indicators [data-bs-target] {
+    background-color: #000000;
+    height: 8px;
+    width: 25px;
+    border: 1px solid #000000;
+    opacity: 0.3;
+}
+
+.carousel-brutal .carousel-indicators .active {
+    background-color: #00D2FF;
+    opacity: 1;
+}
