@@ -249,3 +249,43 @@ img {
 .nav-btn-brutal.admin:hover {
     background-color: #5CE1FF;
 }
+
+.navbar-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 2px 0;
+}
+
+.img-logo-nav {
+    /* Altura prominente en escritorio */
+    height: 95px;
+    width: auto;
+    max-width: 300px;
+    object-fit: contain;
+    /* Recorta bordes sobrantes de la imagen si los tiene */
+    margin: -10px 0;
+    transition: transform 0.2s ease-in-out;
+}
+
+.img-logo-nav:hover {
+    transform: scale(1.05);
+}
+
+/* Ajuste para Tablets (< 992px) */
+@media (max-width: 991.98px) {
+    .img-logo-nav {
+        height: 65px;
+        max-width: 220px;
+        margin: 0;
+    }
+}
+
+/* Ajuste para Celulares (< 576px) */
+@media (max-width: 575.98px) {
+    .img-logo-nav {
+        height: 50px;
+        max-width: 160px;
+        margin: 0;
+    }
+}

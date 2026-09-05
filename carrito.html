@@ -5,229 +5,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <title>Mi Carrito de Compras - CollectorVault</title>
-
+    <title>Carrito de Compras - Shinobi7</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
-
-    <!-- ==========================================================
-         NAVBAR
-    =========================================================== -->
-
     <header class="navbar navbar-expand-lg bg-white border-bottom border-dark border-3">
-
-        <div class="container d-flex justify-content-between align-items-center">
-
-            <h1 class="logo mb-0">
-                Collector<span>Vault</span>
-            </h1>
-
+        <div class="container d-flex justify-content-between align-items-center"><a href="index.html"
+                class="navbar-brand-logo">
+                <img src="images/logo.jpg" alt="Shinobi7 Logo" class="img-logo-nav">
+            </a>
             <nav>
                 <ul class="nav-links d-flex mb-0">
-
-                    <li>
-                        <a href="index.html" class="nav-item">
-                            HOME
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="productos.html" class="nav-item">
-                            PRODUCTOS
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="nosotros.html" class="nav-item">
-                            QUIENES SOMOS
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="login.html" class="nav-item">
-                            INICIAR SESIÓN
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="carrito.html" class="nav-item active">
-                            🛒 CARRITO (0)
-                        </a>
-                    </li>
-
+                    <li><a href="index.html" class="nav-item">HOME</a></li>
+                    <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
+                    <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
+                    <li><a href="login.html" class="nav-item">INICIAR SESIÓN</a></li>
+                    <li><a href="carrito.html" class="nav-item active">CARRITO (0)</a></li>
                 </ul>
             </nav>
-
         </div>
-
     </header>
-
-
-    <!-- ==========================================================
-         CONTENIDO PRINCIPAL
-    =========================================================== -->
-
     <main class="container my-5">
-
-        <h2 class="title-accent mb-4">
-            Mi Carrito de Compras
-        </h2>
-
-
+        <h2 class="title-accent mb-4">Mi Carrito de Compras</h2>
         <div class="row g-4">
-
-
-            <!-- ==================================================
-                 PRODUCTOS DEL CARRITO
-            =================================================== -->
-
             <div class="col-12 col-lg-8">
-
                 <div id="contenedor-carrito-items"></div>
-
             </div>
-
-
-            <!-- ==================================================
-                 RESUMEN DE PAGO
-            =================================================== -->
-
             <div class="col-12 col-lg-4">
-
                 <div class="card p-4 shadow-sm border-2">
-
-                    <h3 class="fw-bold mb-4">
-                        Resumen de Pago
-                    </h3>
-
-
-                    <!-- CUPÓN -->
-
-                    <div class="mb-3">
-
-                        <label for="cupon" class="form-label fw-bold">
-
-                            CUPÓN DE DESCUENTO:
-
-                        </label>
-
-                        <div class="input-group">
-
-                            <input type="text" id="cupon" class="form-control border-2 border-dark"
-                                placeholder="Ingresa código">
-
-                            <button type="button" class="btn btn-dark fw-bold">
-
-                                Aplicar
-
-                            </button>
-
-                        </div>
-
+                    <h3 class="fw-bold mb-4">Resumen de Pago</h3>
+                    <div class="mb-3"><label for="input-cupon" class="form-label fw-bold text-uppercase small">CUPÓN DE
+                            DESCUENTO:</label>
+                        <div class="input-group"><input type="text" id="input-cupon"
+                                class="form-control border-2 border-dark fw-bold" placeholder="Ingresa código"><button
+                                type="button" id="btn-aplicar-cupon" class="btn btn-dark fw-bold border-2 border-dark"
+                                onclick="aplicarCupon()">Aplicar</button></div>
                     </div>
-
-
-                    <!-- ==================================================
-                         DESPACHO
-                    =================================================== -->
-
                     <div class="border-top border-2 border-dark pt-3 mb-3">
-
-                        <h5 class="fw-bold mb-2">
-                            Despacho
-                        </h5>
-
-                        <p id="info-despacho" class="mb-0 text-muted">
-
-                            Se utilizará la dirección registrada en tu cuenta.
-
+                        <h5 class="fw-bold mb-2">Despacho</h5>
+                        <p id="info-despacho" class="mb-0 text-muted">Se utilizará la dirección registrada en tu cuenta.
                         </p>
-
                     </div>
-
-
-                    <!-- ==================================================
-                         TOTAL
-                    =================================================== -->
-
                     <div class="border-top border-2 border-dark pt-3 mb-4">
-
-                        <div class="d-flex justify-content-between align-items-center">
-
-                            <span class="fw-bold">
-                                TOTAL:
-                            </span>
-
-                            <div class="text-end">
-
-                                <span id="total-carrito" class="fw-bold fs-3 text-primary">
-
-                                    $0
-
-                                </span>
-
+                        <div class="d-flex justify-content-between align-items-center"><span
+                                class="fw-bold">TOTAL:</span>
+                            <div class="text-end"><span id="cart-total" class="fw-bold fs-3 text-primary">$0</span>
                             </div>
-
                         </div>
-
-                    </div>
-
-
-                    <!-- PAGAR -->
-
-                    <button onclick="procesarPago()" class="btn btn-success w-100 btn-lg fw-bold">
-
-                        PAGAR
-
-                    </button>
-
+                    </div><button id="btn-pagar" onclick="procesarPago()"
+                        class="btn btn-success w-100 btn-lg fw-bold">PAGAR</button>
                 </div>
-
             </div>
-
         </div>
-
     </main>
-
-
-    <!-- ==========================================================
-         FOOTER
-    =========================================================== -->
-
     <footer class="bg-white border-top border-3 border-dark py-4 mt-5">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
-            <p class="fw-bold mb-0 text-uppercase">&copy; 2026 CollectorVault. Todos los derechos reservados.</p>
-
-            <div class="d-flex gap-3">
-                <a href="https://wa.me/56912345678" target="_blank" class="social-icon-btn whatsapp" title="WhatsApp">
-                    <i class="bi bi-whatsapp"></i>
-                </a>
-                <a href="https://instagram.com" target="_blank" class="social-icon-btn instagram" title="Instagram">
-                    <i class="bi bi-instagram"></i>
-                </a>
-                <a href="https://facebook.com" target="_blank" class="social-icon-btn facebook" title="Facebook">
-                    <i class="bi bi-facebook"></i>
-                </a>
-            </div>
+            <p class="fw-bold mb-0 text-uppercase">&copy; 2026 Shinobi7. Todos los derechos reservados.</p>
+            <div class="d-flex gap-3"><a href="https://wa.me/56912345678" target="_blank"
+                    class="social-icon-btn whatsapp" title="WhatsApp"><i class="bi bi-whatsapp"></i></a><a
+                    href="https://instagram.com" target="_blank" class="social-icon-btn instagram" title="Instagram"><i
+                        class="bi bi-instagram"></i></a><a href="https://facebook.com" target="_blank"
+                    class="social-icon-btn facebook" title="Facebook"><i class="bi bi-facebook"></i></a></div>
         </div>
     </footer>
-
-
-    <!-- ==========================================================
-         SCRIPTS
-    =========================================================== -->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="js/data.js"></script>
     <script src="js/validaciones.js"></script>
     <script src="js/catalogo.js"></script>
     <script src="js/carrito.js"></script>
     <script src="js/main.js"></script>
-
 </body>
 
 </html>
