@@ -219,3 +219,33 @@ img {
 .social-icon-btn.facebook:hover {
     background-color: #1877F2;
 }
+
+.nav-btn-brutal {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    font-weight: 900;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000000 !important;
+    background-color: #FFDE59;
+    /* Amarillo neón llamativo */
+    border: 2.5px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-btn-brutal:hover {
+    background-color: #FFE57F;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px #000000;
+}
+
+.nav-btn-brutal.admin {
+    background-color: #00D2FF;
+    /* Azul neón para Administrador */
+}
+
+.nav-btn-brutal.admin:hover {
+    background-color: #5CE1FF;
+}
