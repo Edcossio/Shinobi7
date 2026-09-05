@@ -48,16 +48,37 @@
                         <p id="info-despacho" class="mb-0 text-muted">Se utilizará la dirección registrada en tu cuenta.
                         </p>
                     </div>
-                    <div class="border-top border-2 border-dark pt-3 mb-4">
-                        <div class="d-flex justify-content-between align-items-center"><span
-                                class="fw-bold">TOTAL:</span>
-                            <div class="text-end"><span id="cart-total" class="fw-bold fs-3 text-primary">$0</span>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-muted small">SUBTOTAL:</span>
+                        <span id="cart-subtotal" class="fw-bold">$0</span>
+                    </div>
+
+                    <!-- DESCUENTO -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-muted small">DESCUENTO:</span>
+                        <span id="cart-descuento" class="fw-bold text-success">$0</span>
+                    </div>
+
+                    <!-- IVA (19%) -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold text-muted small">IVA INCLUIDO (19%):</span>
+                        <span id="cart-iva" class="fw-bold text-secondary">$0</span>
+                    </div>
+
+                    <hr class="border-dark">
+
+                    <!-- TOTAL -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold fs-5">TOTAL:</span>
+                        <div class="text-end">
+                            <span id="cart-total" class="fw-bold fs-3 text-primary">$0</span>
                         </div>
-                    </div><button id="btn-pagar" onclick="procesarPago()"
-                        class="btn btn-success w-100 btn-lg fw-bold">PAGAR</button>
+                    </div>
                 </div>
-            </div>
+            </div><button id="btn-pagar" onclick="procesarPago()"
+                class="btn btn-success w-100 btn-lg fw-bold">PAGAR</button>
+        </div>
+        </div>
         </div>
     </main>
     <footer class="bg-white border-top border-3 border-dark py-4 mt-5">
