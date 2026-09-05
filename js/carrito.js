@@ -1,10 +1,18 @@
 // ============================================================
-// CARRITO DE COMPRAS - BASE Y PERSISTENCIA
+// GESTIÓN DE CARRITO DE COMPRAS CON DESPACHO Y SESIÓN
 // ============================================================
 
+const CUPONES_VALIDOS = {
+    "DUOC10": 0.10,
+    "SHINOBI20": 0.20,
+    "VAULT15": 0.15
+};
+
+let descuentoAplicado = 0;
+let codigoCuponActivo = "";
+
 function obtenerCarrito() {
-    const carrito = localStorage.getItem("collector_carrito");
-    return carrito ? JSON.parse(carrito) : [];
+    return JSON.parse(localStorage.getItem("collector_carrito")) || [];
 }
 
 function guardarCarrito(carrito) {
@@ -14,317 +22,280 @@ function guardarCarrito(carrito) {
 
 function actualizarContadorCarrito() {
     const carrito = obtenerCarrito();
-    const cantidad = carrito.reduce((total, item) => total + item.cantidad, 0);
+    const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
 
-    document.querySelectorAll(".nav-item").forEach(enlace => {
-        if (enlace.textContent.includes("CARRITO")) {
-            enlace.textContent = "🛒 CARRITO (" + cantidad + ")";
+    document.querySelectorAll(".nav-item").forEach(el => {
+        if (el.textContent.includes("CARRITO")) {
+            el.textContent = `CARRITO (${totalItems})`;
         }
     });
 }
 
-// ============================================================
-// AGREGAR PRODUCTO AL CARRITO
-// ============================================================
-
-function agregarAlCarrito(productoId) {
-    const producto = getProductosBD().find(p => p.id === productoId);
+function agregarAlCarrito(idProducto, cantidadDeseada = 1) {
+    const productos = typeof getProductosBD === "function" ? getProductosBD() : [];
+    const producto = productos.find(p => p.id === idProducto);
 
     if (!producto) {
-        alert("No se encontró el producto.");
+        alert("Producto no encontrado.");
         return;
     }
 
-    const imagenUrl = Array.isArray(producto.imagenes)
-        ? producto.imagenes[0]
-        : (producto.imagen || 'images/placeholder.jpg');
+    if (producto.stock <= 0) {
+        alert("¡Producto agotado! No hay unidades disponibles en inventario.");
+        return;
+    }
 
-    const carrito = obtenerCarrito();
-    const existente = carrito.find(item => item.id === productoId);
+    let carrito = obtenerCarrito();
+    const itemExistente = carrito.find(item => item.id === idProducto);
+    const cantidadActualEnCarrito = itemExistente ? itemExistente.cantidad : 0;
+    const nuevaCantidad = cantidadActualEnCarrito + cantidadDeseada;
 
-    if (existente) {
-        existente.cantidad++;
+    if (nuevaCantidad > producto.stock) {
+        alert(`No puedes agregar más unidades. El stock máximo disponible para "${producto.nombre}" es de ${producto.stock} unidades.`);
+        return;
+    }
+
+    if (itemExistente) {
+        itemExistente.cantidad = nuevaCantidad;
     } else {
         carrito.push({
             id: producto.id,
             nombre: producto.nombre,
-            marca: producto.marca,
             precio: producto.precio,
-            categoria: producto.categoria,
-            imagen: imagenUrl,
-            descripcion: producto.descripcion,
-            cantidad: 1
+            imagen: (producto.imagenes && producto.imagenes[0]) || 'images/placeholder.jpg',
+            cantidad: nuevaCantidad
         });
     }
 
     guardarCarrito(carrito);
-    alert(`✅ "${producto.nombre}" fue añadido al carrito.`);
+    alert(`Se agregaron ${cantidadDeseada} unidad(es) de "${producto.nombre}" al carrito.`);
 }
 
-// ============================================================
-// CAMBIAR CANTIDAD / ELIMINAR
-// ============================================================
+function cambiarCantidad(idProducto, nuevaCantidad) {
+    let cantidad = parseInt(nuevaCantidad);
+    if (isNaN(cantidad) || cantidad < 1) cantidad = 1;
 
-function cambiarCantidadCarrito(index, cantidad) {
-    cantidad = parseInt(cantidad);
+    const productos = typeof getProductosBD === "function" ? getProductosBD() : [];
+    const productoBD = productos.find(p => p.id === idProducto);
 
-    if (isNaN(cantidad) || cantidad < 1) {
-        alert("La cantidad debe ser mayor a 0.");
+    if (productoBD && cantidad > productoBD.stock) {
+        alert(`Stock insuficiente. Solo quedan ${productoBD.stock} unidades de "${productoBD.nombre}".`);
+        cantidad = productoBD.stock;
+    }
+
+    let carrito = obtenerCarrito();
+    const item = carrito.find(i => i.id === idProducto);
+
+    if (item) {
+        item.cantidad = cantidad;
+        guardarCarrito(carrito);
         renderizarCarrito();
-        return;
     }
+}
 
-    const carrito = obtenerCarrito();
-    if (!carrito[index]) return;
-
-    carrito[index].cantidad = cantidad;
+function eliminarDelCarrito(idProducto) {
+    let carrito = obtenerCarrito();
+    carrito = carrito.filter(i => i.id !== idProducto);
     guardarCarrito(carrito);
     renderizarCarrito();
 }
 
-function eliminarDelCarrito(index) {
-    const carrito = obtenerCarrito();
-    if (!carrito[index]) return;
+function aplicarCupon() {
+    const inputCupon = document.getElementById("input-cupon");
+    if (!inputCupon) return;
 
-    if (!confirm("¿Está seguro de eliminar este producto del carrito?")) {
+    const codigo = inputCupon.value.trim().toUpperCase();
+
+    if (!codigo) {
+        alert("Por favor ingresa un código de cupón.");
         return;
     }
 
-    carrito.splice(index, 1);
-    guardarCarrito(carrito);
-    renderizarCarrito();
-}
-
-// ============================================================
-// FORMATO Y CÁLCULOS
-// ============================================================
-
-function formatearPrecio(valor) {
-    return new Intl.NumberFormat("es-CL", {
-        style: "currency",
-        currency: "CLP"
-    }).format(valor);
-}
-
-function calcularIVA(total) {
-    return Math.round(total * 19 / 119);
-}
-
-// ============================================================
-// USUARIO ACTIVO Y DESPACHO
-// ============================================================
-
-function obtenerUsuarioActivo() {
-    const sesion = sessionStorage.getItem("sesionActiva");
-    if (!sesion) return null;
-
-    try {
-        const usuarioSesion = JSON.parse(sesion);
-        const usuarios = getUsuariosBD();
-
-        const usuarioBD = usuarios.find(
-            u => u.correo && usuarioSesion.correo && u.correo.toLowerCase() === usuarioSesion.correo.toLowerCase()
-        );
-
-        return usuarioBD || usuarioSesion;
-    } catch (error) {
-        return null;
+    if (CUPONES_VALIDOS[codigo]) {
+        descuentoAplicado = CUPONES_VALIDOS[codigo];
+        codigoCuponActivo = codigo;
+        alert(`¡Cupón "${codigo}" aplicado exitosamente! Se ha descontado un ${descuentoAplicado * 100}%.`);
+        renderizarCarrito();
+    } else {
+        alert("El código de cupón ingresado no es válido. Prueba con DUOC10, SHINOBI20 o VAULT15.");
     }
 }
 
-function mostrarDespacho() {
-    const info = document.getElementById("informacion-despacho");
-    if (info) {
-        info.classList.toggle("d-none");
-    }
-}
+// ------------------------------------------------------------
+// ACTUALIZAR INFORMACIÓN DE DESPACHO EN PANTALLA
+// ------------------------------------------------------------
+function actualizarDireccionDespacho() {
+    const contenedorDespacho = document.getElementById("info-despacho");
+    const sesionRaw = sessionStorage.getItem("sesionActiva");
 
-function crearSeccionDespacho() {
-    const total = document.getElementById("total-carrito");
-    if (!total) return;
+    if (!contenedorDespacho) return;
 
-    const resumen = total.closest(".card");
-    if (!resumen) return;
-
-    let seccion = document.getElementById("seccion-despacho");
-    if (seccion) {
-        seccion.remove();
-    }
-
-    const usuario = obtenerUsuarioActivo();
-
-    seccion = document.createElement("div");
-    seccion.id = "seccion-despacho";
-    seccion.className = "border-top border-2 border-dark pt-3 mb-3";
-
-    if (!usuario) {
-        seccion.innerHTML = `
-            <div class="alert alert-warning mb-0 py-2">
+    if (sesionRaw) {
+        const usuario = JSON.parse(sesionRaw);
+        const direccion = usuario.direccion ? `${usuario.direccion}, ${usuario.comuna || ''}` : "Dirección no especificada";
+        contenedorDespacho.innerHTML = `
+            <div class="alert alert-success border-2 border-dark mb-0 p-2 small">
+                <strong> Enviar a:</strong> ${usuario.nombre || 'Usuario'}<br>
+                <span>${direccion}</span>
+            </div>
+        `;
+    } else {
+        contenedorDespacho.innerHTML = `
+            <div class="alert alert-warning border-2 border-dark mb-0 p-2 small fw-bold">
                 Debes iniciar sesión para utilizar el despacho.
             </div>
         `;
-    } else {
-        const direccion = usuario.direccion || "Dirección no registrada";
-        const comuna = usuario.comuna || "";
-        const region = usuario.region || "";
-
-        seccion.innerHTML = `
-            <h5 class="fw-bold mb-2">Despacho</h5>
-            <button type="button" class="btn btn-outline-primary btn-sm w-100 fw-bold" onclick="mostrarDespacho()">
-                 Despacho a domicilio
-            </button>
-            <div id="informacion-despacho" class="d-none mt-2 p-2 bg-light border border-dark rounded small">
-                <p class="mb-1"><strong>Modalidad:</strong> Despacho a domicilio</p>
-                <p class="mb-1"><strong>Dirección:</strong> ${direccion}</p>
-                <p class="mb-1"><strong>Comuna:</strong> ${comuna}</p>
-                <p class="mb-1"><strong>Región:</strong> ${region}</p>
-                <p class="mb-1"><strong>Costo:</strong> Por confirmar</p>
-                <p class="mb-0"><strong>Entrega:</strong> 3 a 5 días hábiles</p>
-            </div>
-        `;
-    }
-
-    const botones = resumen.querySelectorAll("button");
-    const botonPagar = Array.from(botones).find(boton => boton.textContent.trim().includes("PAGAR"));
-
-    if (botonPagar) {
-        resumen.insertBefore(seccion, botonPagar);
-    } else {
-        resumen.appendChild(seccion);
     }
 }
 
-// ============================================================
-// MOSTRAR CARRITO Y PAGO
-// ============================================================
-
 function renderizarCarrito() {
-    const contenedor = document.getElementById("contenedor-carrito-items");
-    const totalElemento = document.getElementById("total-carrito");
+    const contenedorItems = document.getElementById("contenedor-carrito-items");
+    const elSubtotal = document.getElementById("cart-subtotal");
+    const elDescuento = document.getElementById("cart-descuento");
+    const elTotal = document.getElementById("cart-total");
 
-    if (!contenedor || !totalElemento) return;
+    if (!contenedorItems) return;
 
     const carrito = obtenerCarrito();
-    contenedor.innerHTML = "";
+    const productosBD = typeof getProductosBD === "function" ? getProductosBD() : [];
+
+    actualizarDireccionDespacho();
 
     if (carrito.length === 0) {
-        contenedor.innerHTML = `
-            <div class="alert alert-info border-2 border-dark fw-bold">
-                Tu carrito está vacío.
+        contenedorItems.innerHTML = `
+            <div class="card p-4 text-center border-2 border-dark shadow-sm">
+                <h4>Tu carrito está vacío </h4>
+                <p class="text-muted mb-3">Explora nuestro catálogo para añadir tus figuras favoritas.</p>
+                <div>
+                    <a href="productos.html" class="btn btn-primary fw-bold text-uppercase border-2 border-dark">Ver Productos</a>
+                </div>
             </div>
         `;
-
-        totalElemento.textContent = "$0";
-
-        const ivaAnterior = document.getElementById("iva-carrito");
-        if (ivaAnterior) {
-            ivaAnterior.remove();
-        }
-
-        crearSeccionDespacho();
+        if (elSubtotal) elSubtotal.textContent = "$0";
+        if (elDescuento) elDescuento.textContent = "$0";
+        if (elTotal) elTotal.textContent = "$0";
         return;
     }
 
-    let total = 0;
+    contenedorItems.innerHTML = "";
+    let subtotal = 0;
 
-    carrito.forEach((item, index) => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
+    carrito.forEach(item => {
+        const prodBD = productosBD.find(p => p.id === item.id);
+        const stockMax = prodBD ? prodBD.stock : 99;
+        const totalLinea = item.precio * item.cantidad;
+        subtotal += totalLinea;
 
-        const imagenSrc = item.imagen || (Array.isArray(item.imagenes) ? item.imagenes[0] : 'images/placeholder.jpg');
-
-        contenedor.innerHTML += `
-            <div class="card mb-3 shadow-sm border-2 border-dark">
-                <div class="card-body py-2">
-                    <div class="row align-items-center">
-
-                        <div class="col-3 col-md-2 text-center">
-                            <img src="${imagenSrc}"
-                                 alt="${item.nombre}"
-                                 class="img-fluid border border-dark p-1"
-                                 style="max-height:80px; width:100%; object-fit:contain; background:#fff;">
-                        </div>
-
-                        <div class="col-9 col-md-4">
-                            <h6 class="fw-bold mb-1">${item.nombre}</h6>
-                            <p class="text-muted small mb-1">${item.marca}</p>
-                            <p class="text-primary fw-bold mb-0">${formatearPrecio(item.precio)}</p>
-                        </div>
-
-                        <div class="col-6 col-md-3 mt-2 mt-md-0">
-                            <label class="form-label small fw-bold mb-1">Cantidad</label>
-                            <input type="number"
-                                   value="${item.cantidad}"
-                                   min="1"
-                                   class="form-control form-control-sm border-2 border-dark fw-bold text-center"
-                                   onchange="cambiarCantidadCarrito(${index}, this.value)">
-                        </div>
-
-                        <div class="col-6 col-md-3 text-end mt-2 mt-md-0">
-                            <p class="fw-bold mb-1">${formatearPrecio(subtotal)}</p>
-                            <button type="button"
-                                    class="btn btn-danger btn-sm fw-bold border-2 border-dark"
-                                    onclick="eliminarDelCarrito(${index})">
-                                Eliminar
-                            </button>
-                        </div>
-
+        contenedorItems.innerHTML += `
+            <div class="card mb-3 p-3 border-2 border-dark shadow-sm">
+                <div class="row align-items-center g-3">
+                    <div class="col-3 col-md-2 text-center">
+                        <img src="${item.imagen}" class="img-fluid rounded border border-dark" alt="${item.nombre}" style="max-height: 90px; object-fit: contain;">
+                    </div>
+                    <div class="col-9 col-md-4">
+                        <h6 class="fw-bold mb-1">${item.nombre}</h6>
+                        <span class="text-muted small">Cód: ${item.id}</span><br>
+                        <span class="fw-bold text-primary">$${item.precio.toLocaleString('es-CL')}</span>
+                        <div class="small text-muted mt-1">Stock dispon.: <strong>${stockMax}</strong></div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small fw-bold mb-1">Cantidad:</label>
+                        <input type="number" 
+                               class="form-control border-2 border-dark text-center fw-bold" 
+                               value="${item.cantidad}" 
+                               min="1" 
+                               max="${stockMax}" 
+                               onchange="cambiarCantidad('${item.id}', this.value)">
+                    </div>
+                    <div class="col-6 col-md-3 text-end">
+                        <div class="fw-bold fs-5 mb-2">$${totalLinea.toLocaleString('es-CL')}</div>
+                        <button class="btn btn-sm btn-danger fw-bold border-2 border-dark" onclick="eliminarDelCarrito('${item.id}')">Eliminar</button>
                     </div>
                 </div>
             </div>
         `;
     });
 
-    totalElemento.textContent = formatearPrecio(total);
+    const montoDescuento = Math.round(subtotal * descuentoAplicado);
+    const total = subtotal - montoDescuento;
 
-    let ivaElemento = document.getElementById("iva-carrito");
-    if (!ivaElemento) {
-        ivaElemento = document.createElement("div");
-        ivaElemento.id = "iva-carrito";
-        ivaElemento.className = "text-muted small text-end fw-bold";
-        totalElemento.parentNode.appendChild(ivaElemento);
+    if (elSubtotal) elSubtotal.textContent = `$${subtotal.toLocaleString('es-CL')}`;
+    if (elDescuento) {
+        elDescuento.textContent = descuentoAplicado > 0
+            ? `-$${montoDescuento.toLocaleString('es-CL')} (${codigoCuponActivo})`
+            : "$0";
     }
-
-    ivaElemento.textContent = "(" + formatearPrecio(calcularIVA(total)) + " de IVA incluido)";
-
-    crearSeccionDespacho();
+    if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-CL')}`;
 }
 
+// ------------------------------------------------------------
+// PROCESAR PAGO CON VALIDACIÓN DE SESIÓN Y DIRECCIÓN
+// ------------------------------------------------------------
 function procesarPago() {
-    const carrito = obtenerCarrito();
-
-    if (carrito.length === 0) {
-        alert("Tu carrito está vacío. Añade productos antes de pagar.");
-        return;
-    }
-
-    const usuario = obtenerUsuarioActivo();
-
-    if (!usuario) {
-        alert("Debes iniciar sesión o registrarte para procesar el pago.");
+    const sesionRaw = sessionStorage.getItem("sesionActiva");
+    if (!sesionRaw) {
+        alert("Debes iniciar sesión con tu cuenta para poder procesar la compra y gestionar el despacho.");
         window.location.href = "login.html";
         return;
     }
 
-    if (!usuario.direccion) {
-        alert("No tienes una dirección de despacho registrada. Puedes agregarla desde tu registro de usuario.");
+    const usuario = JSON.parse(sesionRaw);
+    const carrito = obtenerCarrito();
+
+    if (carrito.length === 0) {
+        alert("Tu carrito está vacío.");
         return;
     }
 
-    alert("¡Pago procesado con éxito! El comprobante será enviado a: " + usuario.correo);
+    let productosBD = typeof getProductosBD === "function" ? getProductosBD() : [];
+
+    for (let item of carrito) {
+        const prod = productosBD.find(p => p.id === item.id);
+        if (!prod || prod.stock < item.cantidad) {
+            alert(`No hay suficiente stock de "${item.nombre}". Unidades disponibles: ${prod ? prod.stock : 0}.`);
+            renderizarCarrito();
+            return;
+        }
+    }
+
+    // Descontar inventario
+    carrito.forEach(item => {
+        const prod = productosBD.find(p => p.id === item.id);
+        if (prod) {
+            prod.stock -= item.cantidad;
+        }
+    });
+
+    if (typeof guardarProductosBD === "function") {
+        guardarProductosBD(productosBD);
+    } else {
+        localStorage.setItem("collector_productos", JSON.stringify(productosBD));
+    }
 
     localStorage.removeItem("collector_carrito");
-    actualizarContadorCarrito();
-    renderizarCarrito();
+    descuentoAplicado = 0;
+    codigoCuponActivo = "";
 
+    const direccionEnvio = usuario.direccion ? `${usuario.direccion}, ${usuario.comuna || ''}` : "su dirección registrada";
+    alert(`¡Gracias por tu compra, ${usuario.nombre}! Tu pedido será despachado a: ${direccionEnvio}.`);
     window.location.href = "index.html";
 }
-
-// ============================================================
-// INICIALIZACIÓN AUTOMÁTICA
-// ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
     actualizarContadorCarrito();
     renderizarCarrito();
+
+    const btnPagar = document.getElementById("btn-pagar");
+    if (btnPagar) {
+        btnPagar.addEventListener("click", (e) => {
+            e.preventDefault();
+            procesarPago();
+        });
+    }
 });
+
+// Funciones globales
+window.aplicarCupon = aplicarCupon;
+window.procesarPago = procesarPago;
+window.cambiarCantidad = cambiarCantidad;
+window.eliminarDelCarrito = eliminarDelCarrito;
