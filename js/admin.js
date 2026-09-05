@@ -1,765 +1,397 @@
-// ======================================================
-// VARIABLE PARA SABER SI ESTAMOS EDITANDO UN PRODUCTO
-// ======================================================
+// ============================================================
+// FUNCIONES AUXILIARES DE ALMACENAMIENTO UNIFICADO
+// ============================================================
 
-let productoEditando = null;
+function obtenerUsuariosBD() {
+    const dataLocal = localStorage.getItem("collector_usuarios");
+    if (dataLocal) {
+        return JSON.parse(dataLocal);
+    }
+    return typeof getUsuariosBD === "function" ? getUsuariosBD() : [];
+}
 
+function guardarUsuariosBDUnificado(usuarios) {
+    localStorage.setItem("collector_usuarios", JSON.stringify(usuarios));
+    if (typeof guardarUsuariosBD === "function") guardarUsuariosBD(usuarios);
+    if (typeof saveUsuariosBD === "function") saveUsuariosBD(usuarios);
+}
 
-// ======================================================
-// MOSTRAR PRODUCTOS EN LA TABLA
-// ======================================================
+// ============================================================
+// AJUSTES DE INTERFAZ POR ROLES
+// ============================================================
 
-function renderizarTablaAdminProductos() {
+function adaptarPanelSegunRol() {
+    const sesionRaw = sessionStorage.getItem("sesionActiva");
+    if (!sesionRaw) return;
 
+    const usuario = JSON.parse(sesionRaw);
+    const rol = (usuario.rol || "").toLowerCase();
+
+    if (rol === "vendedor") {
+        document.querySelectorAll(".admin-nav-link").forEach(link => {
+            const href = link.getAttribute("href");
+            if (href === "admin_usuarios.html" || href === "admin_home.html") {
+                if (link.parentElement) link.parentElement.style.display = "none";
+            }
+        });
+    }
+}
+
+// ============================================================
+// CRUD Y BÚSQUEDA DE PRODUCTOS
+// ============================================================
+
+let productoEnEdicionId = null;
+
+function renderizarTablaProductos(lista) {
     const tbody = document.getElementById("tabla-admin-productos");
+    if (!tbody) return;
 
-    if (!tbody) {
-        return;
-    }
-
-    const listaProductos = getProductosBD();
-
+    const productos = lista || (typeof getProductosBD === "function" ? getProductosBD() : []);
     tbody.innerHTML = "";
 
+    if (productos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-3 fw-bold">No se encontraron productos.</td></tr>`;
+        return;
+    }
 
-    // Si no hay productos
-    if (listaProductos.length === 0) {
+    productos.forEach((p) => {
+        const esCritico = p.stock <= (p.stockCritico || 3);
+        const statusBadge = esCritico
+            ? `<span class="badge bg-danger text-uppercase">CRÍTICO (${p.stock})</span>`
+            : `<span class="badge bg-success text-uppercase">OK (${p.stock})</span>`;
 
-        tbody.innerHTML = `
+        tbody.innerHTML += `
             <tr>
-                <td colspan="6" class="text-center">
-                    No hay productos registrados.
+                <td><strong>${p.id}</strong></td>
+                <td>${p.nombre}</td>
+                <td>$${p.precio.toLocaleString('es-CL')}</td>
+                <td>${p.stock}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning fw-bold me-1 text-uppercase border border-dark" onclick="prepararEdicionProducto('${p.id}')">Editar</button>
+                    <button class="btn btn-sm btn-danger fw-bold text-uppercase border border-dark" onclick="eliminarProductoAdmin('${p.id}')">Eliminar</button>
                 </td>
             </tr>
         `;
-
-        return;
-    }
-
-
-    // Recorrer productos
-    listaProductos.forEach(function (prod, index) {
-
-        const limiteCritico = prod.stockCritico || 3;
-
-        const stockCritico = prod.stock <= limiteCritico;
-
-
-        // Formatear precio en pesos chilenos
-        const precioFormateado = new Intl.NumberFormat("es-CL", {
-            style: "currency",
-            currency: "CLP"
-        }).format(prod.precio);
-
-
-        const fila = `
-            <tr>
-
-                <td class="fw-bold">
-                    ${prod.id}
-                </td>
-
-                <td>
-                    ${prod.nombre}
-                </td>
-
-                <td>
-                    ${precioFormateado}
-                </td>
-
-                <td class="${stockCritico ? "text-danger fw-bold" : ""}">
-                    ${prod.stock} u.
-                </td>
-
-                <td>
-
-                    <span class="badge ${stockCritico ? "bg-danger" : "bg-success"}">
-
-                        ${stockCritico
-                ? "STOCK CRÍTICO"
-                : "NORMAL"
-            }
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        class="btn btn-warning btn-sm"
-                        onclick="editarProductoAdmin(${index})">
-
-                        Editar
-
-                    </button>
-
-
-                    <button
-                        type="button"
-                        class="btn btn-danger btn-sm"
-                        onclick="eliminarProductoAdmin(${index})">
-
-                        Eliminar
-
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
-
-
-        tbody.innerHTML += fila;
-
     });
-
 }
 
+function filtrarTablaProductos() {
+    const filtro = document.getElementById("buscar-admin-producto")?.value.toLowerCase().trim() || "";
+    const productos = typeof getProductosBD === "function" ? getProductosBD() : [];
 
-
-// ======================================================
-// GUARDAR PRODUCTO
-// SIRVE TANTO PARA AGREGAR COMO PARA EDITAR
-// ======================================================
-
-function guardarProductoAdmin(event) {
-
-    event.preventDefault();
-
-
-    // Obtener valores del formulario
-
-    const codigo = document
-        .getElementById("prod-codigo")
-        .value
-        .trim();
-
-
-    const nombre = document
-        .getElementById("prod-nombre")
-        .value
-        .trim();
-
-
-    const precio = Number(
-        document.getElementById("prod-precio").value
+    const filtrados = productos.filter(p =>
+        p.id.toLowerCase().includes(filtro) ||
+        p.nombre.toLowerCase().includes(filtro)
     );
 
-
-    const stock = Number(
-        document.getElementById("prod-stock").value
-    );
-
-
-    const stockCritico = Number(
-        document.getElementById("prod-critico").value
-    );
-
-
-
-    // ==================================================
-    // VALIDACIONES
-    // ==================================================
-
-    if (codigo.length < 3) {
-
-        alert("El código debe tener al menos 3 caracteres.");
-
-        return;
-    }
-
-
-    if (nombre === "") {
-
-        alert("Debe ingresar el nombre del producto.");
-
-        return;
-    }
-
-
-    if (precio < 0 || isNaN(precio)) {
-
-        alert("El precio no es válido.");
-
-        return;
-    }
-
-
-    if (
-        stock < 0 ||
-        isNaN(stock) ||
-        !Number.isInteger(stock)
-    ) {
-
-        alert("El stock debe ser un número entero mayor o igual a 0.");
-
-        return;
-    }
-
-
-    if (
-        stockCritico < 1 ||
-        isNaN(stockCritico) ||
-        !Number.isInteger(stockCritico)
-    ) {
-
-        alert("El límite crítico debe ser un número entero mayor o igual a 1.");
-
-        return;
-    }
-
-
-
-    const listaProductos = getProductosBD();
-
-
-
-    // ==================================================
-    // EDITAR PRODUCTO
-    // ==================================================
-
-    if (productoEditando !== null) {
-
-        const producto = listaProductos[productoEditando];
-
-
-        if (!producto) {
-
-            alert("No se encontró el producto.");
-
-            return;
-        }
-
-
-        // Revisar si el nuevo código ya existe
-
-        const codigoExiste = listaProductos.some(
-            function (prod, index) {
-
-                return (
-                    index !== productoEditando &&
-                    prod.id.toLowerCase() === codigo.toLowerCase()
-                );
-
-            }
-        );
-
-
-        if (codigoExiste) {
-
-            alert("Ya existe un producto con ese código.");
-
-            return;
-        }
-
-
-        // Actualizar datos
-
-        producto.id = codigo;
-
-        producto.nombre = nombre;
-
-        producto.precio = precio;
-
-        producto.stock = stock;
-
-        producto.stockCritico = stockCritico;
-
-
-        // Guardar en LocalStorage
-
-        saveProductosBD(listaProductos);
-
-
-        alert("Producto actualizado correctamente.");
-
-
-        cancelarEdicionProducto();
-
-
-        renderizarTablaAdminProductos();
-
-
-        return;
-    }
-
-
-
-    // ==================================================
-    // AGREGAR PRODUCTO NUEVO
-    // ==================================================
-
-    const codigoExiste = listaProductos.some(
-        function (prod) {
-
-            return prod.id.toLowerCase() === codigo.toLowerCase();
-
-        }
-    );
-
-
-    if (codigoExiste) {
-
-        alert("Ya existe un producto con ese código.");
-
-        return;
-    }
-
-
-
-    // Crear producto
-
-    const nuevoProducto = {
-
-        id: codigo,
-
-        nombre: nombre,
-
-        precio: precio,
-
-        categoria: "Anime",
-
-        imagen: "https://via.placeholder.com/300x300?text=Producto",
-
-        destacado: false,
-
-        stock: stock,
-
-        stockCritico: stockCritico,
-
-        descripcion: "Producto registrado en CollectorVault."
-
-    };
-
-
-    // Agregar al arreglo
-
-    listaProductos.push(nuevoProducto);
-
-
-    // Guardar
-
-    saveProductosBD(listaProductos);
-
-
-    alert("Producto agregado correctamente.");
-
-
-    // Limpiar formulario
-
-    cancelarEdicionProducto();
-
-
-    // Actualizar tabla
-
-    renderizarTablaAdminProductos();
-
+    renderizarTablaProductos(filtrados);
 }
 
+function prepararEdicionProducto(id) {
+    const productos = typeof getProductosBD === "function" ? getProductosBD() : [];
+    const prod = productos.find(p => p.id === id);
+    if (!prod) return;
 
+    productoEnEdicionId = prod.id;
 
-// ======================================================
-// EDITAR PRODUCTO
-// ======================================================
-
-function editarProductoAdmin(index) {
-
-    const listaProductos = getProductosBD();
-
-    const producto = listaProductos[index];
-
-
-    if (!producto) {
-
-        alert("Producto no encontrado.");
-
-        return;
+    const inputCodigo = document.getElementById("prod-codigo");
+    if (inputCodigo) {
+        inputCodigo.value = prod.id;
+        inputCodigo.disabled = true;
     }
 
+    document.getElementById("prod-nombre").value = prod.nombre;
+    document.getElementById("prod-precio").value = prod.precio;
+    document.getElementById("prod-stock").value = prod.stock;
+    document.getElementById("prod-critico").value = prod.stockCritico || 3;
 
-    // Guardamos el índice del producto
+    const titulo = document.getElementById("titulo-form-producto");
+    const btnSubmit = document.getElementById("btn-submit-producto");
+    const btnCancelar = document.getElementById("btn-cancelar-edicion");
 
-    productoEditando = index;
+    if (titulo) titulo.textContent = "Editar Configuración de Producto";
+    if (btnSubmit) btnSubmit.textContent = "Actualizar Producto";
+    if (btnCancelar) btnCancelar.style.display = "inline-block";
 
-
-    // Cargar datos en formulario
-
-    document.getElementById("prod-codigo").value =
-        producto.id;
-
-
-    document.getElementById("prod-nombre").value =
-        producto.nombre;
-
-
-    document.getElementById("prod-precio").value =
-        producto.precio;
-
-
-    document.getElementById("prod-stock").value =
-        producto.stock;
-
-
-    document.getElementById("prod-critico").value =
-        producto.stockCritico || 3;
-
-
-    // Cambiar título
-
-    document.getElementById("titulo-form-producto").textContent =
-        "Editar Producto";
-
-
-    // Cambiar texto del botón
-
-    document.getElementById("btn-submit-producto").textContent =
-        "Guardar Cambios";
-
-
-    // Mostrar botón cancelar
-
-    document.getElementById("btn-cancelar-edicion").style.display =
-        "inline-block";
-
-
-    // Subir al formulario
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function resetFormProducto() {
+    productoEnEdicionId = null;
+    const form = document.getElementById("form-admin-producto");
+    if (form) form.reset();
 
+    const inputCodigo = document.getElementById("prod-codigo");
+    if (inputCodigo) inputCodigo.disabled = false;
 
-// ======================================================
-// CANCELAR EDICIÓN
-// ======================================================
+    const titulo = document.getElementById("titulo-form-producto");
+    const btnSubmit = document.getElementById("btn-submit-producto");
+    const btnCancelar = document.getElementById("btn-cancelar-edicion");
 
-function cancelarEdicionProducto() {
-
-    productoEditando = null;
-
-
-    const formulario =
-        document.getElementById("form-admin-producto");
-
-
-    if (formulario) {
-
-        formulario.reset();
-
-    }
-
-
-    // Restaurar valor por defecto
-
-    document.getElementById("prod-critico").value = 3;
-
-
-    // Restaurar título
-
-    document.getElementById("titulo-form-producto").textContent =
-        "Add Item Configuration";
-
-
-    // Restaurar botón
-
-    document.getElementById("btn-submit-producto").textContent =
-        "Agregar Producto";
-
-
-    // Ocultar cancelar
-
-    document.getElementById("btn-cancelar-edicion").style.display =
-        "none";
-
+    if (titulo) titulo.textContent = "Añadir Configuración de Producto";
+    if (btnSubmit) btnSubmit.textContent = "Agregar Producto";
+    if (btnCancelar) btnCancelar.style.display = "none";
 }
 
+function eliminarProductoAdmin(id) {
+    if (!confirm(`¿Está seguro de eliminar el producto (${id}) del inventario?`)) return;
 
+    let productos = typeof getProductosBD === "function" ? getProductosBD() : [];
+    productos = productos.filter(p => p.id !== id);
 
-// ======================================================
-// ELIMINAR PRODUCTO
-// ======================================================
+    if (typeof guardarProductosBD === "function") guardarProductosBD(productos);
 
-function eliminarProductoAdmin(index) {
-
-    const listaProductos = getProductosBD();
-
-    const producto = listaProductos[index];
-
-
-    if (!producto) {
-
-        alert("Producto no encontrado.");
-
-        return;
-    }
-
-
-    const confirmar = confirm(
-        "¿Está seguro de eliminar el producto " +
-        producto.nombre +
-        "?"
-    );
-
-
-    if (!confirmar) {
-
-        return;
-    }
-
-
-    // Eliminar del arreglo
-
-    listaProductos.splice(index, 1);
-
-
-    // Guardar cambios
-
-    saveProductosBD(listaProductos);
-
-
-    alert("Producto eliminado correctamente.");
-
-
-    // Actualizar tabla
-
-    renderizarTablaAdminProductos();
-
+    if (productoEnEdicionId === id) resetFormProducto();
+    filtrarTablaProductos();
 }
 
+// ============================================================
+// CRUD Y BÚSQUEDA DE USUARIOS
+// ============================================================
 
+let usuarioEnEdicionCorreo = null;
 
-// ======================================================
-// MOSTRAR TABLA DE USUARIOS
-// ======================================================
+function renderizarTablaUsuarios(lista) {
+    const tbody = document.getElementById("tabla-admin-usuarios");
+    if (!tbody) return;
 
-function renderizarTablaAdminUsuarios() {
-
-    const tbody =
-        document.getElementById("tabla-admin-usuarios");
-
-
-    if (!tbody) {
-
-        return;
-    }
-
-
-    const listaUsuarios = getUsuariosBD();
-
+    const usuarios = lista || obtenerUsuariosBD();
     tbody.innerHTML = "";
 
-
-    if (listaUsuarios.length === 0) {
-
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center">
-                    No hay usuarios registrados.
-                </td>
-            </tr>
-        `;
-
+    if (usuarios.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-3 fw-bold">No se encontraron usuarios.</td></tr>`;
         return;
     }
 
+    usuarios.forEach((u) => {
+        const rol = u.rol || "Cliente";
+        const badgeColor = (rol.toLowerCase() === "administrador")
+            ? "bg-danger"
+            : (rol.toLowerCase() === "vendedor" ? "bg-warning text-dark" : "bg-secondary");
 
-    listaUsuarios.forEach(function (u, index) {
-
-        let claseRol = "bg-secondary";
-
-
-        if (u.rol === "Administrador") {
-
-            claseRol = "bg-primary";
-
-        }
-        else if (u.rol === "Vendedor") {
-
-            claseRol = "bg-warning text-dark";
-
-        }
-        else if (u.rol === "Cliente") {
-
-            claseRol = "bg-success";
-
-        }
-
-
-        const fila = `
+        tbody.innerHTML += `
             <tr>
-
-                <td class="fw-bold">
-                    ${u.run}
-                </td>
-
+                <td><strong>${u.run || 'N/A'}</strong></td>
+                <td>${u.nombre}</td>
+                <td>${u.correo}</td>
+                <td><span class="badge ${badgeColor} text-uppercase">${rol}</span></td>
                 <td>
-                    ${u.nombre}
+                    <button class="btn btn-sm btn-warning fw-bold me-1 text-uppercase border border-dark" onclick="prepararEdicionUsuario('${u.correo}')">Editar</button>
+                    <button class="btn btn-sm btn-danger fw-bold text-uppercase border border-dark" onclick="eliminarUsuarioAdmin('${u.correo}')">Eliminar</button>
                 </td>
-
-                <td>
-                    ${u.correo}
-                </td>
-
-                <td>
-
-                    <span class="badge ${claseRol}">
-                        ${u.rol}
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <button
-                        type="button"
-                        class="btn btn-outline-secondary btn-sm"
-                        onclick="cambiarRolUsuario(${index})">
-
-                        Cambiar Rol
-
-                    </button>
-
-                </td>
-
             </tr>
         `;
-
-
-        tbody.innerHTML += fila;
-
     });
-
 }
 
+function filtrarTablaUsuarios() {
+    const filtro = document.getElementById("buscar-admin-usuario")?.value.toLowerCase().trim() || "";
+    const usuarios = obtenerUsuariosBD();
 
-
-// ======================================================
-// CAMBIAR ROL
-// ======================================================
-
-function cambiarRolUsuario(index) {
-
-    const listaUsuarios = getUsuariosBD();
-
-    const usuario = listaUsuarios[index];
-
-
-    if (!usuario) {
-
-        alert("Usuario no encontrado.");
-
-        return;
-    }
-
-
-    const roles = [
-        "Cliente",
-        "Vendedor",
-        "Administrador"
-    ];
-
-
-    const posicionActual =
-        roles.indexOf(usuario.rol);
-
-
-    let siguientePosicion;
-
-
-    if (posicionActual === -1) {
-
-        siguientePosicion = 0;
-
-    } else {
-
-        siguientePosicion =
-            (posicionActual + 1) % roles.length;
-
-    }
-
-
-    usuario.rol = roles[siguientePosicion];
-
-
-    saveUsuariosBD(listaUsuarios);
-
-
-    alert(
-        "El usuario " +
-        usuario.nombre +
-        " ahora tiene el rol " +
-        usuario.rol
+    const filtrados = usuarios.filter(u =>
+        (u.nombre && u.nombre.toLowerCase().includes(filtro)) ||
+        (u.run && u.run.toLowerCase().includes(filtro)) ||
+        (u.correo && u.correo.toLowerCase().includes(filtro))
     );
 
-
-    renderizarTablaAdminUsuarios();
-
+    renderizarTablaUsuarios(filtrados);
 }
 
-function verificarPermisosAdmin() {
-    const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
+function prepararEdicionUsuario(correo) {
+    const usuarios = obtenerUsuariosBD();
+    const u = usuarios.find(user => user.correo.toLowerCase() === correo.toLowerCase());
+    if (!u) return;
 
-    if (!sesionActiva || sesionActiva.rol !== "Administrador") {
-        alert("Acceso denegado: No tienes permisos para acceder a esta página.");
-        sessionStorage.removeItem("sesionActiva");
-        window.location.replace("login.html");
-        return false;
+    usuarioEnEdicionCorreo = u.correo;
+
+    document.getElementById("user-run").value = u.run || "";
+    document.getElementById("user-nombre").value = u.nombre || "";
+
+    const inputCorreo = document.getElementById("user-correo");
+    if (inputCorreo) {
+        inputCorreo.value = u.correo || "";
+        inputCorreo.disabled = true;
     }
-    return true;
+
+    document.getElementById("user-password").value = "";
+    document.getElementById("user-rol").value = u.rol || "Cliente";
+
+    const titulo = document.getElementById("titulo-form-usuario");
+    const btnSubmit = document.getElementById("btn-submit-usuario");
+    const btnCancelar = document.getElementById("btn-cancelar-usuario");
+
+    if (titulo) titulo.textContent = "Editar Cuenta de Usuario";
+    if (btnSubmit) btnSubmit.textContent = "Actualizar Usuario";
+    if (btnCancelar) btnCancelar.style.display = "inline-block";
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function resetFormUsuario() {
+    usuarioEnEdicionCorreo = null;
+    const form = document.getElementById("form-admin-usuario");
+    if (form) form.reset();
 
-// ======================================================
-// INICIAR PÁGINA
-// ======================================================
+    const inputCorreo = document.getElementById("user-correo");
+    if (inputCorreo) inputCorreo.disabled = false;
 
-document.addEventListener("DOMContentLoaded", function () {
+    const titulo = document.getElementById("titulo-form-usuario");
+    const btnSubmit = document.getElementById("btn-submit-usuario");
+    const btnCancelar = document.getElementById("btn-cancelar-usuario");
 
-    // Mostrar productos
+    if (titulo) titulo.textContent = "Añadir Usuario";
+    if (btnSubmit) btnSubmit.textContent = "Guardar Usuario";
+    if (btnCancelar) btnCancelar.style.display = "none";
+}
 
-    renderizarTablaAdminProductos();
+function eliminarUsuarioAdmin(correo) {
+    let usuarios = obtenerUsuariosBD();
+    const target = usuarios.find(u => u.correo.toLowerCase() === correo.toLowerCase());
 
+    if (!target) return;
 
-    // Mostrar usuarios si estamos en esa página
-
-    renderizarTablaAdminUsuarios();
-
-
-    // Formulario de productos
-
-    const formulario =
-        document.getElementById("form-admin-producto");
-
-
-    if (formulario) {
-
-        formulario.addEventListener(
-            "submit",
-            guardarProductoAdmin
-        );
-
+    const sesionRaw = sessionStorage.getItem("sesionActiva");
+    if (sesionRaw) {
+        const sesion = JSON.parse(sesionRaw);
+        if (sesion.correo && sesion.correo.toLowerCase() === correo.toLowerCase()) {
+            alert("No puedes eliminar tu propio usuario mientras tienes la sesión activa.");
+            return;
+        }
     }
 
+    if (!confirm(`¿Eliminar al usuario "${target.nombre}" (${correo})?`)) return;
 
-    // Botón cancelar
+    usuarios = usuarios.filter(u => u.correo.toLowerCase() !== correo.toLowerCase());
+    guardarUsuariosBDUnificado(usuarios);
 
-    const botonCancelar =
-        document.getElementById("btn-cancelar-edicion");
-
-
-    if (botonCancelar) {
-
-        botonCancelar.addEventListener(
-            "click",
-            cancelarEdicionProducto
-        );
-
+    if (usuarioEnEdicionCorreo && usuarioEnEdicionCorreo.toLowerCase() === correo.toLowerCase()) {
+        resetFormUsuario();
     }
 
+    filtrarTablaUsuarios();
+}
+
+// ============================================================
+// EVENTOS Y REGISTRO DE EVENTOS FORMULARIO
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    adaptarPanelSegunRol();
+
+    renderizarTablaProductos();
+    renderizarTablaUsuarios();
+
+    // FORMULARIO PRODUCTOS
+    const formProd = document.getElementById("form-admin-producto");
+    if (formProd) {
+        formProd.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let productos = typeof getProductosBD === "function" ? getProductosBD() : [];
+
+            const codigo = document.getElementById("prod-codigo").value.trim();
+            const nombre = document.getElementById("prod-nombre").value.trim();
+            const precio = parseInt(document.getElementById("prod-precio").value);
+            const stock = parseInt(document.getElementById("prod-stock").value);
+            const critico = parseInt(document.getElementById("prod-critico").value);
+
+            if (productoEnEdicionId) {
+                const index = productos.findIndex(p => p.id === productoEnEdicionId);
+                if (index !== -1) {
+                    productos[index] = {
+                        ...productos[index],
+                        nombre,
+                        precio,
+                        stock,
+                        stockCritico: critico
+                    };
+                    alert("Producto actualizado exitosamente.");
+                }
+            } else {
+                if (productos.some(p => p.id.toLowerCase() === codigo.toLowerCase())) {
+                    alert("Error: El código de producto ya existe.");
+                    return;
+                }
+
+                productos.push({
+                    id: codigo,
+                    nombre,
+                    precio,
+                    stock,
+                    stockCritico: critico,
+                    imagenes: ['images/placeholder.jpg']
+                });
+                alert("Producto agregado exitosamente.");
+            }
+
+            if (typeof guardarProductosBD === "function") guardarProductosBD(productos);
+            resetFormProducto();
+            filtrarTablaProductos();
+        });
+
+        document.getElementById("btn-cancelar-edicion")?.addEventListener("click", resetFormProducto);
+    }
+
+    // FORMULARIO USUARIOS
+    const formUser = document.getElementById("form-admin-usuario");
+    if (formUser) {
+        formUser.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let usuarios = obtenerUsuariosBD();
+
+            const run = document.getElementById("user-run").value.trim();
+            const nombre = document.getElementById("user-nombre").value.trim();
+            const correoInput = document.getElementById("user-correo");
+            const correo = correoInput ? correoInput.value.trim() : "";
+            const password = document.getElementById("user-password").value;
+            const rol = document.getElementById("user-rol").value;
+
+            if (usuarioEnEdicionCorreo) {
+                // MODO EDICIÓN
+                const index = usuarios.findIndex(u => u.correo.toLowerCase() === usuarioEnEdicionCorreo.toLowerCase());
+                if (index !== -1) {
+                    usuarios[index].run = run;
+                    usuarios[index].nombre = nombre;
+                    usuarios[index].rol = rol;
+
+                    if (password.trim().length > 0) {
+                        usuarios[index].password = btoa(password);
+                    }
+
+                    // Actualizar sesión activa si te estás editando a ti mismo
+                    const sesionRaw = sessionStorage.getItem("sesionActiva");
+                    if (sesionRaw) {
+                        const sesion = JSON.parse(sesionRaw);
+                        if (sesion.correo && sesion.correo.toLowerCase() === usuarioEnEdicionCorreo.toLowerCase()) {
+                            sessionStorage.setItem("sesionActiva", JSON.stringify(usuarios[index]));
+                        }
+                    }
+
+                    alert("Usuario actualizado exitosamente.");
+                }
+            } else {
+                // MODO CREACIÓN
+                if (usuarios.some(u => u.correo.toLowerCase() === correo.toLowerCase())) {
+                    alert("Error: El correo ingresado ya está registrado.");
+                    return;
+                }
+
+                usuarios.push({
+                    run,
+                    nombre,
+                    correo,
+                    password: btoa(password || "12345678"),
+                    rol
+                });
+                alert("Usuario creado exitosamente.");
+            }
+
+            guardarUsuariosBDUnificado(usuarios);
+            resetFormUsuario();
+            renderizarTablaUsuarios();
+        });
+
+        document.getElementById("btn-cancelar-usuario")?.addEventListener("click", resetFormUsuario);
+    }
 });
