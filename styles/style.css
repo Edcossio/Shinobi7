@@ -6,11 +6,12 @@
     --card-bg: #FFFFFF;
     --text-main: #121212;
     --text-muted: #555555;
-    
+
     /* Acentos */
-    --accent-blue: #0091EA; 
-    --accent-red: #FF3D00;  
-    --accent-yellow: #FFD700; /* Pikachu Gold */
+    --accent-blue: #0091EA;
+    --accent-red: #FF3D00;
+    --accent-yellow: #FFD700;
+    /* Pikachu Gold */
     --border-dark: #121212;
 }
 
@@ -35,11 +36,14 @@ body {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
-.logo span { color: var(--accent-blue); }
 
-.nav-links { 
-    list-style: none; 
-    gap: 30px; 
+.logo span {
+    color: var(--accent-blue);
+}
+
+.nav-links {
+    list-style: none;
+    gap: 30px;
     margin-bottom: 0;
     padding-left: 0;
 }
@@ -54,7 +58,8 @@ body {
     transition: all 0.2s ease;
 }
 
-.nav-item:hover, .nav-item.active {
+.nav-item:hover,
+.nav-item.active {
     color: var(--accent-blue);
     border-bottom: 3px solid var(--accent-yellow);
 }
@@ -66,7 +71,8 @@ body {
 .card {
     background-color: var(--card-bg);
     border: 3px solid var(--border-dark) !important;
-    border-radius: 0px !important; /* Bordes rectos neo-brutalistas */
+    border-radius: 0px !important;
+    /* Bordes rectos neo-brutalistas */
     box-shadow: 5px 5px 0px var(--border-dark);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     position: relative;
@@ -137,4 +143,214 @@ body {
     background: #FFFFFF;
     border-top: 3px solid var(--border-dark);
     padding: 2rem 0;
+}
+
+/* Responsividad global para imágenes */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Imágenes en las tarjetas del catálogo */
+.card-img-top {
+    width: 100%;
+    height: 260px;
+    /* Altura fija uniforme para las tarjetas */
+    object-fit: contain !important;
+    /* Muestra la imagen completa sin recortarla */
+    background-color: #ffffff;
+    /* Fondo blanco para rellenar espacios vacíos */
+    padding: 12px;
+    /* Margen interno para que respire dentro de la tarjeta */
+    border-bottom: 3px solid var(--border-dark);
+}
+
+/* Galería de miniaturas en la vista detalle */
+.img-miniatura {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+    background-color: #ffffff;
+    border: 2px solid var(--border-dark);
+    padding: 3px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.img-miniatura:hover {
+    border-color: var(--accent-blue);
+    transform: translateY(-2px);
+}
+
+.img-miniatura.active {
+    border: 3px solid var(--accent-yellow) !important;
+    box-shadow: 2px 2px 0px var(--border-dark);
+}
+
+.social-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background-color: #ffffff;
+    color: var(--border-dark);
+    border: 3px solid var(--border-dark);
+    font-size: 1.3rem;
+    text-decoration: none;
+    box-shadow: 2px 2px 0px var(--border-dark);
+    transition: all 0.15s ease;
+}
+
+.social-icon-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--border-dark);
+    color: #ffffff;
+}
+
+.social-icon-btn.whatsapp:hover {
+    background-color: #25D366;
+}
+
+.social-icon-btn.instagram:hover {
+    background-color: #E1306C;
+}
+
+.social-icon-btn.facebook:hover {
+    background-color: #1877F2;
+}
+
+.nav-btn-brutal {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    font-weight: 900;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #000000 !important;
+    background-color: #FFDE59;
+    /* Amarillo neón llamativo */
+    border: 2.5px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-btn-brutal:hover {
+    background-color: #FFE57F;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px #000000;
+}
+
+.nav-btn-brutal.admin {
+    background-color: #00D2FF;
+    /* Azul neón para Administrador */
+}
+
+.nav-btn-brutal.admin:hover {
+    background-color: #5CE1FF;
+}
+
+.navbar-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 2px 0;
+}
+
+.img-logo-nav {
+    /* Altura prominente en escritorio */
+    height: 95px;
+    width: auto;
+    max-width: 300px;
+    object-fit: contain;
+    /* Recorta bordes sobrantes de la imagen si los tiene */
+    margin: -10px 0;
+    transition: transform 0.2s ease-in-out;
+}
+
+.img-logo-nav:hover {
+    transform: scale(1.05);
+}
+
+/* Ajuste para Tablets (< 992px) */
+@media (max-width: 991.98px) {
+    .img-logo-nav {
+        height: 65px;
+        max-width: 220px;
+        margin: 0;
+    }
+}
+
+/* Ajuste para Celulares (< 576px) */
+@media (max-width: 575.98px) {
+    .img-logo-nav {
+        height: 50px;
+        max-width: 160px;
+        margin: 0;
+    }
+}
+
+/* ============================================================
+   CARRUSEL NEO-BRUTALISTA DE PRÓXIMOS LANZAMIENTOS
+   ============================================================ */
+
+.carousel-brutal {
+    border: 3px solid #000000;
+    box-shadow: 6px 6px 0px #000000;
+    background-color: #ffffff;
+    overflow: hidden;
+}
+
+.carousel-brutal .carousel-item {
+    min-height: 320px;
+}
+
+/* Control estricto del tamaño de la imagen */
+.carousel-img-wrapper {
+    height: 250px;
+    /* Evita que la imagen se vea gigante */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.carousel-img-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Botones de navegación (Flechas) */
+.carousel-brutal .carousel-control-prev,
+.carousel-brutal .carousel-control-next {
+    width: 50px;
+    opacity: 1;
+}
+
+.carousel-brutal .carousel-control-prev-icon,
+.carousel-brutal .carousel-control-next-icon {
+    background-color: #000000;
+    border: 2px solid #000000;
+    padding: 15px;
+    background-size: 50%;
+}
+
+/* Indicadores inferiores (Rayitas) */
+.carousel-brutal .carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+.carousel-brutal .carousel-indicators [data-bs-target] {
+    background-color: #000000;
+    height: 8px;
+    width: 25px;
+    border: 1px solid #000000;
+    opacity: 0.3;
+}
+
+.carousel-brutal .carousel-indicators .active {
+    background-color: #00D2FF;
+    opacity: 1;
 }

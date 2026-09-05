@@ -1,174 +1,166 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Actualizar contador del carrito
+
+    // ==========================================================
+    // CARRITO
+    // ==========================================================
     if (typeof actualizarContadorCarrito === "function") {
         actualizarContadorCarrito();
     }
 
-    const listaProductos = getProductosBD();
+    // ==========================================================
+    // PRODUCTOS
+    // ==========================================================
+    if (typeof getProductosBD === "function") {
+        const listaProductos = getProductosBD();
 
-    // 2. Renderizar Catálogo Completo (productos.html)
-    if (document.getElementById("contenedor-productos")) {
-        renderizarCatalogo(listaProductos, "contenedor-productos");
+        if (document.getElementById("contenedor-productos")) {
+            renderizarCatalogo(listaProductos, "contenedor-productos");
+        }
+
+        if (document.getElementById("contenedor-destacados")) {
+            const destacados = listaProductos.filter(p => p.destacado);
+            renderizarCatalogo(destacados, "contenedor-destacados");
+        }
+
+        if (document.getElementById("contenedor-detalle-producto")) {
+            cargarDetalleProducto();
+        }
     }
 
-    // 3. Renderizar Destacados (index.html)
-    if (document.getElementById("contenedor-destacados")) {
-        const destacados = listaProductos.filter(p => p.destacado);
-        renderizarCatalogo(destacados, "contenedor-destacados");
-    }
-
-    // 4. Renderizar Detalle de Producto (detalle.html)
-    if (document.getElementById("contenedor-detalle-producto")) {
-        cargarDetalleProducto();
-    }
-
-    // 5. Selector Dinámico de Regiones y Comunas (registro.html)
+    // ==========================================================
+    // REGIONES Y COMUNAS
+    // ==========================================================
     const selectRegion = document.getElementById("select-region");
     const selectComuna = document.getElementById("select-comuna");
-    if (selectRegion && selectComuna) {
-        selectRegion.addEventListener("change", (e) => {
+
+    if (selectRegion && selectComuna && typeof regionesYComunas !== "undefined") {
+        selectRegion.addEventListener("change", e => {
             selectComuna.innerHTML = '<option value="">Seleccione Comuna</option>';
-            const reg = regionesYComunas.find(r => r.codigo === e.target.value);
-            if (reg) {
-                reg.comunas.forEach(c => {
-                    const opt = document.createElement("option");
-                    opt.value = c;
-                    opt.textContent = c;
-                    selectComuna.appendChild(opt);
+            const region = regionesYComunas.find(r => r.codigo === e.target.value);
+            if (region) {
+                region.comunas.forEach(comuna => {
+                    const option = document.createElement("option");
+                    option.value = comuna;
+                    option.textContent = comuna;
+                    selectComuna.appendChild(option);
                 });
             }
         });
     }
 
-    // 6. Listener Formulario Login
+    // ==========================================================
+    // LOGIN
+    // ==========================================================
+    // ==========================================================
+    // LOGIN (Soporta clave en texto plano y btoa)
+    // ==========================================================
     const formLogin = document.getElementById("form-login");
+
     if (formLogin) {
-        formLogin.addEventListener("submit", (e) => {
+        formLogin.addEventListener("submit", e => {
             e.preventDefault();
+
             const correo = document.getElementById("correo").value.trim();
             const pass = document.getElementById("password").value.trim();
 
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
+            const checkCorreo = validarCorreo(correo);
+            if (!checkCorreo.valido) return mostrarMensaje(checkCorreo.msj);
 
-            const checkP = validarPassword(pass);
-            if (!checkP.valido) return mostrarMensaje(checkP.msj);
+            const checkPassword = validarPassword(pass);
+            if (!checkPassword.valido) return mostrarMensaje(checkPassword.msj);
 
-            // Buscar usuario que coincida en correo Y contraseña
+            const passCodificada = btoa(pass);
             const usuariosBD = getUsuariosBD();
+
+            // Compara tanto texto plano como btoa para evitar bloqueos por formato
             const usuarioValido = usuariosBD.find(u =>
-                u.correo.toLowerCase() === correo.toLowerCase() && u.password === pass
+                u.correo.toLowerCase() === correo.toLowerCase() &&
+                (u.password === pass || u.password === passCodificada)
             );
 
             if (usuarioValido) {
-                // Guardar la sesión activa en SessionStorage
                 sessionStorage.setItem("sesionActiva", JSON.stringify(usuarioValido));
                 mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
 
-                // Redirección basada en el rol real
-                if (usuarioValido.rol === "Administrador") {
-                    window.location.href = "admin_home.html";
+                const rol = (usuarioValido.rol || "").toLowerCase();
+                if (rol === "administrador" || rol === "vendedor") {
+                    window.location.replace("admin_productos.html");
                 } else {
-                    window.location.href = "index.html";
+                    window.location.replace("index.html");
                 }
             } else {
                 mostrarMensaje("Correo o contraseña incorrectos.");
             }
         });
     }
+    // ==========================================================
+    // NAVBAR Y SESIÓN
+    // ==========================================================
+    function obtenerSesionActiva() {
+        const sesion = sessionStorage.getItem("sesionActiva");
+        return sesion ? JSON.parse(sesion) : null;
+    }
 
-    // --- NUEVO: Control Dinámico del Navbar ---
-    function actualizarInterfazSesion() {
-        const sesionActiva = JSON.parse(sessionStorage.getItem("sesionActiva"));
+    function actualizarNavbarSesion() {
+        const usuario = obtenerSesionActiva();
         const navLinks = document.querySelector(".nav-links");
 
-        if (sesionActiva && navLinks) {
-            // Si el usuario es Administrador, agregamos un acceso directo al panel en la barra pública
-            if (sesionActiva.rol === "Administrador" && !document.getElementById("link-panel-admin")) {
-                const liAdmin = document.createElement("li");
-                liAdmin.innerHTML = `<a href="admin_home.html" id="link-panel-admin" class="nav-item fw-bold text-danger" style="background: #ffebee; border-radius: 4px; padding: 5px 10px;">ADMIN</a>`;
-                navLinks.insertBefore(liAdmin, navLinks.firstChild);
+        if (!navLinks || !usuario) return;
+
+        const rol = (usuario.rol || "").toLowerCase();
+        let adminLinkHTML = "";
+
+        if (rol === "administrador") {
+            adminLinkHTML = `
+            <li class="d-flex align-items-center me-2">
+                <a href="admin_home.html" class="nav-btn-brutal admin">
+                     PANEL ADMIN
+                </a>
+            </li>`;
+        } else if (rol === "vendedor") {
+            adminLinkHTML = `
+            <li class="d-flex align-items-center me-2">
+                <a href="admin_productos.html" class="nav-btn-brutal">
+                     GESTIÓN PRODUCTOS
+                </a>
+            </li>`;
+        }
+
+        const itemLogin = Array.from(navLinks.children).find(li => li.textContent.includes("INICIAR SESIÓN"));
+
+        if (itemLogin) {
+            itemLogin.outerHTML = `
+            ${adminLinkHTML}
+            <li class="d-flex align-items-center me-2">
+                <a href="#" id="btn-logout-nav" class="nav-item text-danger fw-bold ms-2">
+                    CERRAR SESIÓN (${usuario.nombre || 'Usuario'})
+                </a>
+            </li>
+        `;
+
+            const btnLogout = document.getElementById("btn-logout-nav");
+            if (btnLogout) {
+                btnLogout.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    sessionStorage.removeItem("sesionActiva");
+                    alert("Has cerrado sesión exitosamente.");
+                    window.location.href = "index.html";
+                });
             }
-
-            // Cambiar "INICIAR SESIÓN" por "CERRAR SESIÓN"
-            const enlacesNav = document.querySelectorAll(".nav-item");
-            enlacesNav.forEach(el => {
-                if (el.textContent.includes("INICIAR SESIÓN")) {
-                    el.textContent = "CERRAR SESIÓN"; // <-- Texto limpio sin el nombre
-                    el.href = "#";
-                    el.classList.add("text-danger");
-
-                    el.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        sessionStorage.removeItem("sesionActiva");
-                        window.location.href = "index.html";
-                    });
-                }
-            });
         }
     }
 
-    // Ejecutar al cargar cualquier página
-    actualizarInterfazSesion();
+    actualizarNavbarSesion();
 
-    // 7. Listener Formulario Contacto
+    // ==========================================================
+    // CONTACTO Y REGISTRO
+    // ==========================================================
     const formContacto = document.getElementById("form-contacto");
     if (formContacto) {
-        formContacto.addEventListener("submit", (e) => {
+        formContacto.addEventListener("submit", e => {
             e.preventDefault();
-            const nombre = document.getElementById("nombre-contacto").value.trim();
-            const correo = document.getElementById("correo-contacto").value.trim();
-            const comentario = document.getElementById("comentario").value.trim();
-
-            if (!nombre || nombre.length > 100) return mostrarMensaje("Nombre obligatorio (máx. 100 caracteres).");
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
-            if (!comentario || comentario.length > 500) return mostrarMensaje("Comentario obligatorio (máx. 500 caracteres).");
-
             mostrarMensaje("Mensaje enviado con éxito.", false);
             formContacto.reset();
-        });
-    }
-
-    // 8. Listener Formulario Registro
-    const formRegistro = document.getElementById("form-registro");
-    if (formRegistro) {
-        formRegistro.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const run = document.getElementById("run").value.trim();
-            const nombre = document.getElementById("nombre").value.trim();
-            const correo = document.getElementById("correo").value.trim();
-            const pass = document.getElementById("password").value.trim();
-            const checkTerminos = document.getElementById("check-terminos");
-
-            const checkR = validarRun(run);
-            if (!checkR.valido) return mostrarMensaje(checkR.msj);
-            if (!nombre || nombre.length > 50) return mostrarMensaje("Nombre obligatorio (máx. 50 caracteres).");
-
-            const checkC = validarCorreo(correo);
-            if (!checkC.valido) return mostrarMensaje(checkC.msj);
-
-            const checkP = validarPassword(pass);
-            if (!checkP.valido) return mostrarMensaje(checkP.msj);
-
-            if (checkTerminos && !checkTerminos.checked) {
-                return mostrarMensaje("Debes aceptar los Términos y Condiciones para continuar.");
-            }
-
-            const usuarios = getUsuariosBD();
-
-            // Validar que el RUN o el Correo no existan previamente
-            const existeUsuario = usuarios.some(u => u.run === run || u.correo.toLowerCase() === correo.toLowerCase());
-            if (existeUsuario) {
-                return mostrarMensaje("Ya existe un usuario registrado con este RUN o correo electrónico.");
-            }
-
-            // Guardar usuario único
-            usuarios.push({ run, nombre, correo, password: pass, rol: "Cliente" });
-            saveUsuariosBD(usuarios);
-
-            mostrarMensaje("Usuario registrado con éxito.", false);
-            window.location.href = "login.html";
         });
     }
 });

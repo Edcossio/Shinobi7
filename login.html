@@ -4,22 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - CollectorVault</title>
+    <title>Iniciar Sesión - Shinobi7</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
     <header class="navbar navbar-expand-lg bg-white border-bottom border-dark border-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="logo mb-0">Collector<span>Vault</span></h1>
+        <div class="container d-flex justify-content-between align-items-center"><a href="index.html"
+                class="navbar-brand-logo">
+                <img src="images/logo.jpg" alt="Shinobi7 Logo" class="img-logo-nav">
+            </a>
             <nav>
                 <ul class="nav-links d-flex mb-0">
                     <li><a href="index.html" class="nav-item">HOME</a></li>
                     <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
                     <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
-                    <li><a href="login.html" class="nav-item active">INICIAR SESIÓN</a></li>
-                    <li><a href="carrito.html" class="nav-item">🛒 CARRITO (0)</a></li>
+                    <li><a href="login.html" class="nav-item">INICIAR SESIÓN</a></li>
+                    <li><a href="carrito.html" class="nav-item">CARRITO (0)</a></li>
                 </ul>
             </nav>
         </div>
@@ -31,13 +34,12 @@
             <form id="form-login">
                 <div class="mb-3">
                     <label for="correo" class="form-label fw-bold">CORREO ELECTRÓNICO:</label>
-                    <input type="email" id="correo" class="form-control form-control-lg border-2 border-dark"
-                        placeholder="ejemplo@duoc.cl" required>
+                    <input type="email" id="correo" class="form-control form-control-lg border-2 border-dark" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label fw-bold">CONTRASEÑA:</label>
                     <input type="password" id="password" class="form-control form-control-lg border-2 border-dark"
-                        placeholder="8 a 32 caracteres" required>
+                        required>
                 </div>
 
                 <!-- Enlace de Recuperación y Checkbox Recordarme -->
@@ -65,9 +67,21 @@
         </div>
     </main>
 
-    <footer class="footer text-center mt-5">
-        <div class="container">
-            <p class="text-muted mb-0">&copy; 2026 CollectorVault</p>
+    <footer class="bg-white border-top border-3 border-dark py-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <p class="fw-bold mb-0 text-uppercase">&copy; 2026 Shinobi7. Todos los derechos reservados.</p>
+
+            <div class="d-flex gap-3">
+                <a href="https://wa.me/56912345678" target="_blank" class="social-icon-btn whatsapp" title="WhatsApp">
+                    <i class="bi bi-whatsapp"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank" class="social-icon-btn instagram" title="Instagram">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a href="https://facebook.com" target="_blank" class="social-icon-btn facebook" title="Facebook">
+                    <i class="bi bi-facebook"></i>
+                </a>
+            </div>
         </div>
     </footer>
 

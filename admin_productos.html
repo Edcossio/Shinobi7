@@ -4,151 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CollectorVault - Gestión de Productos</title>
+    <title>Shinobi7 - Gestión de Productos</title>
     <link rel="stylesheet" href="styles/admin.css">
-    <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Estilos personalizados -->
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
 <body>
 
-    <!-- ENCABEZADO -->
     <header class="zte-topbar">
-        <div>CollectorVault</div>
-        <div class="zte-model">
-            F680_v2.0
-        </div>
+        <a href="index.html" class="navbar-brand-logo">
+            <img src="images/logo.jpg" alt="Shinobi7 Logo" style="height: 85px; width: auto;">
+        </a>
     </header>
 
     <div class="zte-wrapper">
 
-        <!-- MENÚ LATERAL -->
         <aside class="admin-sidebar">
             <ul class="admin-nav">
-                <li class="nav-cat-title nav-group-active">
-                    - Administracion
-                </li>
-                <li>
-                    <a href="admin_home.html" class="admin-nav-link">
-                        Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_productos.html" class="admin-nav-link active">
-                        Gestion Productos
-                    </a>
-                </li>
-                <li>
-                    <a href="admin_usuarios.html" class="admin-nav-link">
-                        Gestion Usuarios
-                    </a>
-                </li>
+                <li class="nav-cat-title nav-group-active">- Administracion</li>
+                <li><a href="admin_home.html" class="admin-nav-link"> Dashboard</a></li>
+                <li><a href="admin_productos.html" class="admin-nav-link active"> Gestion Productos</a></li>
+                <li><a href="admin_usuarios.html" class="admin-nav-link"> Gestion Usuarios</a></li>
                 <hr class="text-white-50 my-2">
-                <li>
-                    <a href="index.html" class="admin-nav-link">
-                        Volver al Home
-                    </a>
-                </li>
-
+                <li><a href="index.html" class="admin-nav-link"> Volver al Home</a></li>
             </ul>
         </aside>
 
-        <!-- CONTENIDO PRINCIPAL -->
         <main class="admin-main">
 
             <div class="zte-breadcrumb">
-                <span>Path: Administration - System Management</span>
+                <span>Administracion</span>
                 <a href="#" id="btn-cerrar-sesion-top">Logout</a>
             </div>
+
             <div class="zte-content">
 
                 <!-- FORMULARIO -->
                 <section class="zte-panel">
-                    <h3 id="titulo-form-producto">
-                        Add Item Configuration
-                    </h3>
+                    <h3 id="titulo-form-producto">Configuración Productos</h3>
 
                     <form id="form-admin-producto">
                         <div class="form-grid">
-
-                            <!-- CÓDIGO -->
                             <div class="form-group">
-                                <label for="prod-codigo">
-                                    Code (min. 3 chars):
-                                </label>
+                                <label for="prod-codigo">Código (min. 3 caracteres):</label>
                                 <input type="text" id="prod-codigo" class="form-control" placeholder="FIG-000"
                                     minlength="3" required>
                             </div>
-
-                            <!-- NOMBRE -->
                             <div class="form-group">
-                                <label for="prod-nombre">
-                                    Product Name:
-                                </label>
+                                <label for="prod-nombre">Producto:</label>
                                 <input type="text" id="prod-nombre" class="form-control" required>
                             </div>
-
-                            <!-- PRECIO -->
                             <div class="form-group">
-                                <label for="prod-precio">
-                                    Price (CLP):
-                                </label>
+                                <label for="prod-precio">Precio (CLP):</label>
                                 <input type="number" id="prod-precio" class="form-control" min="0" required>
                             </div>
-
-                            <!-- STOCK -->
                             <div class="form-group">
-                                <label for="prod-stock">
-                                    Stock Units:
-                                </label>
+                                <label for="prod-stock">Stock:</label>
                                 <input type="number" id="prod-stock" class="form-control" min="0" required>
                             </div>
-
-                            <!-- STOCK CRÍTICO -->
                             <div class="form-group">
-                                <label for="prod-critico">
-                                    Critical Limit:
-                                </label>
+                                <label for="prod-critico">Pocas Unidades:</label>
                                 <input type="number" id="prod-critico" class="form-control" min="1" value="3" required>
                             </div>
-
                         </div>
 
-                        <!-- BOTÓN PRINCIPAL -->
-                        <button type="submit" id="btn-submit-producto" class="btn-admin btn-admin-primary">
-                            Agregar Producto
-                        </button>
-
-                        <!-- CANCELAR EDICIÓN -->
+                        <button type="submit" id="btn-submit-producto" class="btn-admin btn-admin-primary">Agregar
+                            Producto</button>
                         <button type="button" id="btn-cancelar-edicion" class="btn btn-secondary"
-                            style="display: none;">
-                            Cancelar
-                        </button>
+                            style="display: none;">Cancelar</button>
                     </form>
                 </section>
 
-                <!-- TABLA -->
+                <!-- TABLA CON BUSCADOR -->
                 <section class="zte-panel">
-                    <h3>
-                        Inventory Table
-                    </h3>
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <h3 class="mb-0">Inventory Table</h3>
+                        <div style="max-width: 300px; width: 100%;">
+                            <input type="text" id="buscar-admin-producto"
+                                class="form-control form-control-sm border-2 border-dark"
+                                placeholder="Buscar por código o nombre..." oninput="filtrarTablaProductos()">
+                        </div>
+                    </div>
 
                     <div class="admin-table-container">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Product Name</th>
-                                    <th>Price</th>
+                                    <th>Codigo</th>
+                                    <th>Producto</th>
+                                    <th>Precio</th>
                                     <th>Stock</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
                                 </tr>
                             </thead>
-                            <tbody id="tabla-admin-productos">
-                            </tbody>
+                            <tbody id="tabla-admin-productos"></tbody>
                         </table>
                     </div>
                 </section>
@@ -159,34 +110,13 @@
 
     </div>
 
-    <!-- Script específico para manejar el cierre de sesión seguro desde el panel -->
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const cerrarSesion = (e) => {
-                e.preventDefault();
-                sessionStorage.removeItem("sesionActiva");
-                window.location.href = "login.html";
-            };
-
-            const btn1 = document.getElementById("btn-cerrar-sesion");
-            const btn2 = document.getElementById("btn-cerrar-sesion-top");
-
-            if (btn1) btn1.addEventListener("click", cerrarSesion);
-            if (btn2) btn2.addEventListener("click", cerrarSesion);
-        });
-    </script>
-
-    <!-- BOOTSTRAP -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
-
-    <!-- ARCHIVOS JAVASCRIPT -->
+    <script src="js/finalSesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/data.js"></script>
     <script src="js/validaciones.js"></script>
     <script src="js/catalogo.js"></script>
     <script src="js/carrito.js"></script>
     <script src="js/main.js"></script>
-    <!-- IMPORTANTE: ADMIN.JS VA AL FINAL -->
     <script src="js/admin.js"></script>
 
 </body>
