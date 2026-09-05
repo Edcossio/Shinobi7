@@ -16,13 +16,13 @@
 
     <!-- Menú de Navegación Superior -->
     <header class="navbar navbar-expand-lg bg-white border-bottom border-dark border-3">
-        <div class="container d-flex justify-content-between align-items-center"><a href="index.html"
-                class="navbar-brand-logo">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="index.html" class="navbar-brand-logo">
                 <img src="images/logo.jpg" alt="Shinobi7 Logo" class="img-logo-nav">
             </a>
             <nav>
                 <ul class="nav-links d-flex mb-0">
-                    <li><a href="index.html" class="nav-item">HOME</a></li>
+                    <li><a href="index.html" class="nav-item active">HOME</a></li>
                     <li><a href="productos.html" class="nav-item">PRODUCTOS</a></li>
                     <li><a href="nosotros.html" class="nav-item">QUIENES SOMOS</a></li>
                     <li><a href="login.html" class="nav-item">INICIAR SESIÓN</a></li>
@@ -46,6 +46,33 @@
                 style="text-decoration: none; display: inline-block; padding: 12px 30px;">
                 Ver Catálogo Completo
             </a>
+        </section>
+
+        <!-- Sección de Próximos Lanzamientos (Carrusel Dinámico) -->
+        <section class="mb-5">
+            <div class="d-flex align-items-center mb-3">
+                <h3
+                    style="margin-bottom: 0; text-transform: uppercase; border-left: 4px solid var(--accent-yellow); padding-left: 10px;">
+                    PRÓXIMOS LANZAMIENTOS
+                </h3>
+                <span class="badge bg-warning text-dark border border-2 border-dark ms-3 fw-bold fs-6">PRE-ORDER</span>
+            </div>
+
+            <div id="carruselProximos" class="carousel slide carousel-brutal" data-bs-ride="carousel">
+                <div class="carousel-indicators" id="carrusel-indicadores"></div>
+                <div class="carousel-inner p-4" id="carrusel-items"></div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carruselProximos"
+                    data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carruselProximos"
+                    data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                </button>
+            </div>
         </section>
 
         <!-- Sección de "Destacados del Mes" -->
