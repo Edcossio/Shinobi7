@@ -147,9 +147,9 @@ function eliminarProductoAdmin(id) {
     filtrarTablaProductos();
 }
 
-// ============================================================
+
 // CRUD Y BÚSQUEDA DE USUARIOS
-// ============================================================
+
 
 let usuarioEnEdicionCorreo = null;
 
@@ -273,9 +273,8 @@ function eliminarUsuarioAdmin(correo) {
     filtrarTablaUsuarios();
 }
 
-// ============================================================
 // EVENTOS Y REGISTRO DE EVENTOS FORMULARIO
-// ============================================================
+
 
 document.addEventListener("DOMContentLoaded", () => {
     adaptarPanelSegunRol();
@@ -359,7 +358,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         usuarios[index].password = btoa(password);
                     }
 
-                    // Actualizar sesión activa si te estás editando a ti mismo
+                    // Actualizar sesión activa si te estás editando al usuario en uso
                     const sesionRaw = sessionStorage.getItem("sesionActiva");
                     if (sesionRaw) {
                         const sesion = JSON.parse(sesionRaw);
