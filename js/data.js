@@ -17,7 +17,7 @@ const productosIniciales = [
     },
     {
         id: "PROX-002",
-        nombre: "Shigeo Kageyama (Mob)",
+        nombre: "Nendoroid -Shigeo Kageyama (Mob)",
         precio: 48990,
         categoria: "MOB PSYCHO 100",
         fabricante: "Nendoroid",
@@ -41,7 +41,7 @@ const productosIniciales = [
     },
     {
         id: "FIG-001",
-        nombre: "Reshiram Collector Edition",
+        nombre: "Reshiram - Collector Edition",
         marca: "Good Smile Company",
         precio: 189990,
         categoria: "Pokemon",
@@ -75,7 +75,7 @@ const productosIniciales = [
     },
     {
         id: "FIG-003",
-        nombre: "Emilia 1/7 Scale Figure",
+        nombre: "Emilia 1/7 - Scale Figure",
         marca: "Kadokawa",
         precio: 145000,
         categoria: "Anime",

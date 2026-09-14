@@ -152,6 +152,7 @@ function renderizarCarrito() {
     const contenedorItems = document.getElementById("contenedor-carrito-items");
     const elSubtotal = document.getElementById("cart-subtotal");
     const elDescuento = document.getElementById("cart-descuento");
+    const elIva = document.getElementById("cart-iva");
     const elTotal = document.getElementById("cart-total");
 
     if (!contenedorItems) return;
@@ -164,7 +165,7 @@ function renderizarCarrito() {
     if (carrito.length === 0) {
         contenedorItems.innerHTML = `
             <div class="card p-4 text-center border-2 border-dark shadow-sm">
-                <h4>Tu carrito está vacío </h4>
+                <h4>Tu carrito está vacío</h4>
                 <p class="text-muted mb-3">Explora nuestro catálogo para añadir tus figuras favoritas.</p>
                 <div>
                     <a href="productos.html" class="btn btn-primary fw-bold text-uppercase border-2 border-dark">Ver Productos</a>
@@ -173,6 +174,7 @@ function renderizarCarrito() {
         `;
         if (elSubtotal) elSubtotal.textContent = "$0";
         if (elDescuento) elDescuento.textContent = "$0";
+        if (elIva) elIva.textContent = "$0";
         if (elTotal) elTotal.textContent = "$0";
         return;
     }
@@ -219,12 +221,16 @@ function renderizarCarrito() {
     const montoDescuento = Math.round(subtotal * descuentoAplicado);
     const total = subtotal - montoDescuento;
 
+    // CÁLCULO DEL IVA (19% INCLUIDO EN EL TOTAL)
+    const montoIva = Math.round(total - (total / 1.19));
+
     if (elSubtotal) elSubtotal.textContent = `$${subtotal.toLocaleString('es-CL')}`;
     if (elDescuento) {
         elDescuento.textContent = descuentoAplicado > 0
             ? `-$${montoDescuento.toLocaleString('es-CL')} (${codigoCuponActivo})`
             : "$0";
     }
+    if (elIva) elIva.textContent = `$${montoIva.toLocaleString('es-CL')}`;
     if (elTotal) elTotal.textContent = `$${total.toLocaleString('es-CL')}`;
 }
 
