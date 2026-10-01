@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shinobi7 - Punto de Venta (POS)</title>
+    <!-- Bootstrap 5.3 CSS e Íconos -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Estilos de la aplicación -->
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+
+<body class="bg-light">
+
+    <!-- BARRA SUPERIOR DE CAJERO -->
+    <header class="zte-topbar">
+        <div class="d-flex align-items-center gap-2">
+            <a href="index.html" class="navbar-brand-logo me-2">
+                <img src="images/logo.jpg" alt="Shinobi7 Logo" style="height: 45px; width: auto;">
+            </a>
+            <span class="badge bg-warning text-dark border border-dark fw-bold">FRONT-OFFICE CAJA</span>
+            <span id="pos-badge-estado-turno" class="badge bg-danger text-white border border-dark fw-bold">TURNO
+                CERRADO</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span id="pos-cajero-nombre" class="small fw-bold text-white d-none d-sm-inline">Cajero: Cargando...</span>
+            <a href="#" id="btn-cerrar-sesion-top" class="text-white text-decoration-underline small fw-bold">Cerrar
+                Sesión</a>
+        </div>
+    </header>
+
+    <div class="container-fluid py-3 px-3 px-md-4">
+        <!-- BARRA DE ACCIONES DE CAJA -->
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div class="d-flex gap-2 flex-wrap">
+                <button id="btn-abrir-turno-ui" class="btn btn-sm btn-success fw-bold border-2 border-dark"
+                    onclick="mostrarModalAperturaTurno()">
+                    <i class="bi bi-door-open-fill me-1"></i> Abrir Turno / Caja
+                </button>
+                <button id="btn-cerrar-turno-ui" class="btn btn-sm btn-danger fw-bold border-2 border-dark"
+                    onclick="mostrarModalCierreTurno()" disabled>
+                    <i class="bi bi-door-closed-fill me-1"></i> Arqueo / Cierre de Turno
+                </button>
+                <button class="btn btn-sm btn-outline-dark fw-bold border-2" onclick="mostrarHistorialTurno()">
+                    <i class="bi bi-journal-text me-1"></i> Mis Ventas del Turno
+                </button>
+                <button class="btn btn-sm btn-outline-dark fw-bold border-2" onclick="reimprimirUltimaBoleta()">
+                    <i class="bi bi-printer me-1"></i> Reimprimir Último Ticket
+                </button>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <a href="admin_productos.html" class="btn btn-sm btn-outline-dark fw-bold border-2">
+                    <i class="bi bi-box-seam me-1"></i> Inventario
+                </a>
+                <span class="badge bg-dark text-white p-2 border border-dark fw-bold fs-6"
+                    id="pos-reloj">00:00:00</span>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- CATÁLOGO Y BÚSQUEDA -->
+            <div class="col-12 col-lg-7 col-xl-8">
+                <div class="card p-3 border-3 shadow-sm bg-white h-100">
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 col-md-7">
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark text-white border-2 border-dark fw-bold">
+                                    <i class="bi bi-barcode"></i>
+                                </span>
+                                <input type="text" id="pos-buscar" class="form-control border-2 border-dark fw-bold"
+                                    placeholder="Escanear código de barras o buscar por nombre..."
+                                    oninput="filtrarProductosPOS()" autofocus>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-5">
+                            <select id="pos-categoria" class="form-select border-2 border-dark fw-bold"
+                                onchange="filtrarProductosPOS()">
+                                <option value="">TODAS LAS CATEGORÍAS</option>
+                                <option value="Pokemon">POKÉMON</option>
+                                <option value="Anime">ANIME</option>
+                                <option value="Vocaloid">VOCALOID</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 overflow-auto" id="pos-contenedor-productos" style="max-height: 620px;"></div>
+                </div>
+            </div>
+
+            <!-- TICKET EN TIEMPO REAL -->
+            <div class="col-12 col-lg-5 col-xl-4">
+                <div class="card p-3 border-3 shadow-sm bg-white d-flex flex-column h-100">
+                    <h4
+                        class="fw-black text-uppercase border-bottom border-3 border-dark pb-2 mb-2 d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-cart4 me-2"></i>CARRITO POS</span>
+                        <button class="btn btn-sm btn-outline-danger fw-bold border-2" onclick="vaciarCarritoPOS()"
+                            title="Vaciar Carrito">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </h4>
+
+                    <!-- Descuentos / Cupones preconfigurados -->
+                    <div class="mb-2">
+                        <label for="pos-select-cupon" class="form-label fw-bold small text-uppercase mb-1">Cupón
+                            Autorizado:</label>
+                        <select id="pos-select-cupon" class="form-select form-select-sm border-2 border-dark fw-bold"
+                            onchange="aplicarCuponPOS()">
+                            <option value="">SIN DESCUENTO</option>
+                            <option value="DUOC10">DUOC10 (10% Dcto)</option>
+                            <option value="SHINOBI20">SHINOBI20 (20% Dcto)</option>
+                            <option value="VAULT15">VAULT15 (15% Dcto)</option>
+                        </select>
+                    </div>
+
+                    <!-- Lista de Ítems -->
+                    <div id="pos-items-ticket" class="flex-grow-1 overflow-auto mb-2 pe-1"
+                        style="max-height: 250px; min-height: 160px;"></div>
+
+                    <!-- Desglose de Pago -->
+                    <div class="border-top border-3 border-dark pt-2 bg-light p-3 border-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1 small fw-bold">
+                            <span class="text-muted">SUBTOTAL:</span>
+                            <span id="pos-subtotal">$0</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-1 small fw-bold text-success">
+                            <span>DESCUENTO APLICADO:</span>
+                            <span id="pos-descuento">$0</span>
+                        </div>
+                        <div
+                            class="d-flex justify-content-between align-items-center mb-1 small fw-bold text-secondary">
+                            <span>IVA INCLUIDO (19%):</span>
+                            <span id="pos-iva">$0</span>
+                        </div>
+                        <hr class="my-2 border-dark">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-black fs-5">TOTAL:</span>
+                            <span id="pos-total" class="fw-black fs-3 text-primary">$0</span>
+                        </div>
+                    </div>
+
+                    <!-- Botón Modal de Cobro -->
+                    <button id="btn-procesar-cobro" onclick="abrirModalCobro()"
+                        class="btn btn-success btn-lg w-100 fw-black text-uppercase border-3 border-dark shadow-sm"
+                        disabled>
+                        <i class="bi bi-cash-coin me-2"></i>PROCEDER AL COBRO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: APERTURA DE TURNO -->
+    <div class="modal fade" id="modalAperturaTurno" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-success text-white border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-door-open-fill me-2"></i>Apertura de
+                        Turno / Caja</h5>
+                </div>
+                <div class="modal-body p-4">
+                    <label for="input-monto-inicial" class="form-label fw-bold">Monto Inicial en Efectivo (Fondo de
+                        Caja):</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-2 border-dark fw-bold">$</span>
+                        <input type="number" id="input-monto-inicial"
+                            class="form-control border-2 border-dark fw-bold fs-4" value="50000" min="0">
+                    </div>
+                    <p class="small text-muted mb-0">Declara el saldo inicial en billetes/monedas entregado por el
+                        supervisor para dar vueltos.</p>
+                </div>
+                <div class="modal-footer bg-light border-top border-3 border-dark">
+                    <button type="button" class="btn btn-success fw-bold border-2 border-dark text-uppercase w-100"
+                        onclick="confirmarAperturaTurno()">Iniciar Jornada de Venta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PROCESAMIENTO DE PAGO MEJORADO -->
+    <div class="modal fade" id="modalCobroPOS" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-dark text-white border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-calculator me-2"></i>Cobro y
+                        Registro de Pago</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 border-end border-2 border-dark pe-md-4">
+                            <h6 class="fw-bold text-uppercase border-bottom border-2 border-dark pb-1 mb-3">Forma de
+                                Pago Dividido / Múltiple</h6>
+
+                            <div class="mb-3">
+                                <label for="cobro-metodo-sel" class="form-label fw-bold small">Método de Pago:</label>
+                                <select id="cobro-metodo-sel" class="form-select border-2 border-dark fw-bold">
+                                    <option value="Efectivo">EFECTIVO</option>
+                                    <option value="Débito / Redcompra">DÉBITO / REDCOMPRA</option>
+                                    <option value="Tarjeta de Crédito">TARJETA DE CRÉDITO</option>
+                                    <option value="Transferencia">TRANSFERENCIA BANCARIA</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label id="cobro-monto-label" for="cobro-monto-input"
+                                    class="form-label fw-bold small">Monto Recibido en este Método:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-2 border-dark fw-bold">$</span>
+                                    <input type="number" id="cobro-monto-input"
+                                        class="form-control border-2 border-dark fw-bold fs-5" placeholder="0">
+                                    <button class="btn btn-dark fw-bold border-2 border-dark"
+                                        onclick="agregarPagoDividido()">Añadir Pago</button>
+                                </div>
+                                <div id="cobro-metodo-help" class="form-text small fw-bold text-muted mt-1"></div>
+                            </div>
+
+                            <div class="mb-2">
+                                <span class="fw-bold small text-uppercase">Pagos Registrados:</span>
+                                <ul id="lista-pagos-divididos" class="list-group border-2 border-dark mt-1"
+                                    style="max-height: 120px; overflow-y: auto;"></ul>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 ps-md-4 d-flex flex-column justify-content-between">
+                            <div>
+                                <h6 class="fw-bold text-uppercase border-bottom border-2 border-dark pb-1 mb-3">Resumen
+                                    de Venta</h6>
+
+                                <div class="d-flex justify-content-between fs-5 fw-bold mb-2">
+                                    <span>Total a Cobrar:</span>
+                                    <span id="cobro-modal-total" class="text-primary">$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between fs-6 fw-bold mb-2">
+                                    <span>Total Pagado:</span>
+                                    <span id="cobro-modal-cubierto" class="text-success">$0</span>
+                                </div>
+                                <div class="d-flex justify-content-between fs-6 fw-bold mb-3">
+                                    <span>Pendiente:</span>
+                                    <span id="cobro-modal-falta" class="text-danger">$0</span>
+                                </div>
+
+                                <div class="p-3 bg-warning text-dark border-2 border-dark rounded-0 mb-3">
+                                    <span class="fw-black text-uppercase d-block small">VUELTO A ENTREGAR (SOLO
+                                        EFECTIVO):</span>
+                                    <span id="cobro-modal-vuelto" class="display-6 fw-black">$0</span>
+                                </div>
+                            </div>
+
+                            <button id="btn-finalizar-venta-confirmada"
+                                class="btn btn-success btn-lg w-100 fw-black text-uppercase border-3 border-dark"
+                                onclick="ejecutarVentaFinalPOS()" disabled>
+                                <i class="bi bi-printer-fill me-2"></i>Emitir Boleta y Finalizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: VISTA PREVIA DE BOLETA -->
+    <div class="modal fade" id="modalBoletaTermica" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-dark text-white border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-receipt me-2"></i>Comprobante de
+                        Venta</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div id="contenedor-boleta-imprimible" class="ticket-thermal"></div>
+                </div>
+                <div class="modal-footer bg-light border-top border-3 border-dark">
+                    <button type="button" class="btn btn-dark fw-bold border-2 border-dark w-100"
+                        onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Imprimir Ticket Térmico
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ARQUEO DE CAJA A CIEGAS -->
+    <div class="modal fade" id="modalCierreTurno" data-bs-backdrop="static" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-danger text-white border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-shield-lock-fill me-2"></i>Arqueo de
+                        Caja a Ciegas</h5>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-warning border-2 border-dark fw-bold small mb-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Por protocolo de seguridad, no se muestra
+                        el saldo esperado. Cuenta el dinero físico e ingresa el monto total exacto que entregas.
+                    </div>
+                    <label for="input-monto-declarado" class="form-label fw-bold">Efectivo Físico en Caja
+                        Recontado:</label>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text border-2 border-dark fw-bold">$</span>
+                        <input type="number" id="input-monto-declarado"
+                            class="form-control border-2 border-dark fw-bold fs-4" placeholder="0" min="0">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top border-3 border-dark">
+                    <button type="button" class="btn btn-secondary fw-bold border-2 border-dark"
+                        data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger fw-bold border-2 border-dark text-uppercase"
+                        onclick="confirmarCierreTurnoACiegas()">Entregar Caja y Cerrar Turno</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: AUTORIZACIÓN DE SUPERVISOR -->
+    <div class="modal fade" id="modalAuthSupervisor" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-warning text-dark border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-key-fill me-2"></i>Permiso de
+                        Supervisor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="small fw-bold mb-3" id="auth-supervisor-motivo">Esta acción requiere validación de
+                        contraseña de Administrador/Supervisor.</p>
+                    <div class="mb-3">
+                        <label for="auth-supervisor-pass" class="form-label fw-bold small">Contraseña de
+                            Supervisor:</label>
+                        <input type="password" id="auth-supervisor-pass"
+                            class="form-control border-2 border-dark fw-bold">
+                    </div>
+                </div>
+                <div class="modal-footer bg-light border-top border-3 border-dark">
+                    <button type="button" class="btn btn-dark w-100 fw-bold border-2 border-dark"
+                        onclick="ejecutarAccionConSupervisor()">Autorizar Acción</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: HISTORIAL DE VENTAS DEL TURNO -->
+    <div class="modal fade" id="modalHistorialTurno" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-3 border-dark">
+                <div class="modal-header bg-dark text-white border-bottom border-3 border-dark">
+                    <h5 class="modal-title fw-black text-uppercase"><i class="bi bi-journal-check me-2"></i>Ventas de Tu
+                        Jornada Actual</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="table-responsive">
+                        <table class="table table-bordered border-dark table-hover align-middle small">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Folio</th>
+                                    <th>Hora</th>
+                                    <th>Pago</th>
+                                    <th>Total</th>
+                                    <th>Estado</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-historial-boletas-turno"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guardias de Seguridad y Lógica POS -->
+    <script src="js/finalSesion.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script src="js/pos.js"></script>
+
+</body>
+
+</html>

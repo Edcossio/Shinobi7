@@ -27,6 +27,7 @@ function adaptarPanelSegunRol() {
     const usuario = JSON.parse(sesionRaw);
     const rol = (usuario.rol || "").toLowerCase();
 
+    // Si es Vendedor, ocultamos solo Gestión de Usuarios y Dashboard
     if (rol === "vendedor") {
         document.querySelectorAll(".admin-nav-link").forEach(link => {
             const href = link.getAttribute("href");

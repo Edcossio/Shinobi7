@@ -1,5 +1,5 @@
 // ==========================================================================
-// SEGURIDAD Y PROTECCIÓN DE RUTAS ADMIN (ADMIN / VENDEDOR)
+// SEGURIDAD Y PROTECCIÓN DE RUTAS ADMIN & POS (ADMIN / VENDEDOR)
 // ==========================================================================
 
 function verificarPermisosAcceso() {
@@ -15,11 +15,11 @@ function verificarPermisosAcceso() {
     const rol = (sesionActiva.rol || "").toLowerCase().trim();
     const paginaActual = window.location.pathname.split("/").pop().toLowerCase();
 
-    // Permitir acceso a admin_productos tanto a Vendedor como a Administrador
+    // Vendedor solo tiene acceso a Gestión de Productos y POS
     if (rol === "vendedor") {
         if (paginaActual.includes("admin_usuarios") || paginaActual.includes("admin_home")) {
-            alert("Acceso restringido: El rol Vendedor solo tiene acceso a la gestión de productos.");
-            window.location.replace("admin_productos.html");
+            alert("Acceso restringido: El rol Vendedor solo tiene acceso a la gestión de productos y al Punto de Venta (POS).");
+            window.location.replace("pos.html");
             return false;
         }
     } else if (rol !== "administrador") {
@@ -31,15 +31,12 @@ function verificarPermisosAcceso() {
     return true;
 }
 
-// 1. Validar de inmediato al cargar el script
 verificarPermisosAcceso();
 
-// 2. Proteger contra el caché del botón "Atrás" (bfcache)
 window.addEventListener("pageshow", () => {
     verificarPermisosAcceso();
 });
 
-// 3. Configuración unificada de los botones de cierre de sesión
 document.addEventListener("DOMContentLoaded", () => {
     const ejecutarCierreSesion = (e) => {
         e.preventDefault();

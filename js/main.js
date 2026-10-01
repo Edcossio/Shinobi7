@@ -51,9 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================================
     // LOGIN
     // ==========================================================
-    // ==========================================================
-    // LOGIN (Soporta clave en texto plano y btoa)
-    // ==========================================================
     const formLogin = document.getElementById("form-login");
 
     if (formLogin) {
@@ -72,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const passCodificada = btoa(pass);
             const usuariosBD = getUsuariosBD();
 
-            // Compara tanto texto plano como btoa para evitar bloqueos por formato
             const usuarioValido = usuariosBD.find(u =>
                 u.correo.toLowerCase() === correo.toLowerCase() &&
                 (u.password === pass || u.password === passCodificada)
@@ -83,7 +79,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 mostrarMensaje(`¡Bienvenido/a de vuelta, ${usuarioValido.nombre}!`, false);
 
                 const rol = (usuarioValido.rol || "").toLowerCase();
-                if (rol === "administrador" || rol === "vendedor") {
+                if (rol === "administrador") {
+                    window.location.replace("admin_home.html");
+                } else if (rol === "vendedor") {
                     window.location.replace("admin_productos.html");
                 } else {
                     window.location.replace("index.html");
@@ -93,8 +91,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
     // ==========================================================
-    // NAVBAR Y SESIÓN
+    // NAVBAR Y SESIÓN DIVERSIFICADA
     // ==========================================================
     function obtenerSesionActiva() {
         const sesion = sessionStorage.getItem("sesionActiva");
@@ -112,16 +111,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (rol === "administrador") {
             adminLinkHTML = `
-            <li class="d-flex align-items-center me-2">
+            <li class="d-flex align-items-center me-2 flex-wrap gap-1">
+                <a href="pos.html" class="nav-btn-brutal" style="background-color: #25D366;">
+                    <i class="bi bi-calculator me-1"></i> POS CAJA
+                </a>
                 <a href="admin_home.html" class="nav-btn-brutal admin">
-                     PANEL ADMIN
+                    PANEL ADMIN
                 </a>
             </li>`;
         } else if (rol === "vendedor") {
             adminLinkHTML = `
-            <li class="d-flex align-items-center me-2">
+            <li class="d-flex align-items-center me-2 flex-wrap gap-1">
+                <a href="pos.html" class="nav-btn-brutal" style="background-color: #25D366;">
+                    <i class="bi bi-calculator me-1"></i> POS CAJA
+                </a>
                 <a href="admin_productos.html" class="nav-btn-brutal">
-                     GESTIÓN PRODUCTOS
+                    GESTIÓN PRODUCTOS
                 </a>
             </li>`;
         }
@@ -152,9 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     actualizarNavbarSesion();
 
-    // ==========================================================
-    // CONTACTO Y REGISTRO
-    // ==========================================================
     const formContacto = document.getElementById("form-contacto");
     if (formContacto) {
         formContacto.addEventListener("submit", e => {
