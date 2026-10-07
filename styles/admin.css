@@ -29,7 +29,6 @@ body {
     padding: 0 !important;
 }
 
-/* --- Banner Verde Superior --- */
 .zte-topbar {
     background-color: var(--zte-green);
     color: #ffffff;
@@ -48,7 +47,6 @@ body {
     font-weight: normal;
 }
 
-/* --- Estructura Principal --- */
 .zte-wrapper {
     display: flex;
     flex-grow: 1;
@@ -178,7 +176,6 @@ body {
     text-transform: uppercase;
 }
 
-/* --- Formulario Clásico Estilo Router --- */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -211,7 +208,6 @@ body {
     box-shadow: 0 0 3px var(--zte-green-light);
 }
 
-/* --- Botones --- */
 .btn-admin {
     padding: 6px 16px;
     border: 1px solid var(--zte-border);
@@ -244,9 +240,9 @@ body {
     font-size: 0.75rem;
 }
 
-/* --- Tablas --- */
 .admin-table-container {
     overflow-x: auto;
+    width: 100%;
 }
 
 .admin-table {
@@ -273,7 +269,6 @@ body {
     background-color: #fafafa;
 }
 
-/* --- Badges --- */
 .badge-status {
     padding: 2px 6px;
     font-size: 0.7rem;
@@ -303,4 +298,30 @@ body {
     background-color: #fcf8e3;
     color: #8a6d3b;
     border: 1px solid #faebcc;
+}
+
+/* RESPONSIVIDAD PARCHE ADMIN */
+@media (max-width: 768px) {
+    .zte-wrapper {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100% !important;
+        border-right: none;
+        border-bottom: 2px solid var(--zte-border);
+    }
+
+    .admin-nav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .admin-nav li {
+        flex: 1 1 auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
 }

@@ -23,7 +23,6 @@ Thumbs.db
 *.bak
 *.swp
 
-# Archivos comprimidos pesados (por si haces respaldos locales)
 *.zip
 *.rar
 *.tar.gz

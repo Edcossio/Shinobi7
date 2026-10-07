@@ -1,5 +1,5 @@
 // ============================================================
-// FUNCIONES AUXILIARES DE VALIDACIÓN
+// FUNCIONES AUXILIARES DE VALIDACIÓN (GLOBAL & POS)
 // ============================================================
 
 function validarCorreo(correo) {
@@ -52,6 +52,43 @@ function solicitarRecuperacion(event) {
 }
 
 // ============================================================
+// VALIDACIONES ESPECÍFICAS PARA EL MÓDULO POS
+// ============================================================
+
+function validarMontoDinero(monto) {
+    const num = parseInt(monto);
+    if (isNaN(num) || num < 0) {
+        return { valido: false, msj: "Debes ingresar un monto de dinero válido igual o mayor a $0." };
+    }
+    return { valido: true, monto: num };
+}
+
+function validarCodigoBusqueda(codigo) {
+    const limpio = (codigo || "").trim();
+    return limpio.length > 0;
+}
+
+function validarClaveSupervisorBD(clave) {
+    if (!clave || clave.trim().length === 0) {
+        return { valido: false, msj: "Por favor ingresa la contraseña de supervisor." };
+    }
+
+    const usuarios = typeof getUsuariosBD === "function" ? getUsuariosBD() : [];
+    const passCodificada = btoa(clave.trim());
+
+    const adminValido = usuarios.find(u =>
+        (u.rol || "").toLowerCase() === "administrador" &&
+        (u.password === clave.trim() || u.password === passCodificada)
+    );
+
+    if (!adminValido) {
+        return { valido: false, msj: "Contraseña de Administrador/Supervisor incorrecta." };
+    }
+
+    return { valido: true, admin: adminValido };
+}
+
+// ============================================================
 // MANEJO DE EVENTOS Y REGISTRO DE USUARIOS
 // ============================================================
 
@@ -61,7 +98,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorConfirm = document.getElementById("error-confirm-password");
     const formRegistro = document.getElementById("form-registro");
 
-    // Feedback visual en tiempo real para confirmar contraseña
     if (confirmInput && passInput && errorConfirm) {
         confirmInput.addEventListener("input", () => {
             if (confirmInput.value && passInput.value !== confirmInput.value) {
@@ -73,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Listener para el envio del formulario
     if (formRegistro) {
         formRegistro.addEventListener("submit", (e) => {
             e.preventDefault();
@@ -89,28 +124,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const direccion = document.getElementById("direccion")?.value.trim() || "";
             const checkTerminos = document.getElementById("check-terminos")?.checked;
 
-            // Validar RUN
             const vRun = validarRun(run);
-            if (!vRun.valido) {
-                mostrarMensaje(vRun.msj);
-                return;
-            }
+            if (!vRun.valido) return mostrarMensaje(vRun.msj);
 
-            // Validar Correo
             const vCorreo = validarCorreo(correo);
-            if (!vCorreo.valido) {
-                mostrarMensaje(vCorreo.msj);
-                return;
-            }
+            if (!vCorreo.valido) return mostrarMensaje(vCorreo.msj);
 
-            // Validar Contraseña
             const vPass = validarPassword(pass);
-            if (!vPass.valido) {
-                mostrarMensaje(vPass.msj);
-                return;
-            }
+            if (!vPass.valido) return mostrarMensaje(vPass.msj);
 
-            // Validar Coincidencia de Contraseñas
             if (pass !== confirmPass) {
                 if (errorConfirm) {
                     errorConfirm.textContent = "Las contraseñas no coinciden.";
@@ -122,25 +144,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Validar Términos
             if (!checkTerminos) {
                 mostrarMensaje("Debes aceptar los Términos y Condiciones para registrarte.");
                 return;
             }
 
-            // Objeto de Usuario
-            const nuevoUsuario = {
-                run,
-                nombre,
-                correo,
-                password: pass,
-                telefono,
-                region,
-                comuna,
-                direccion
-            };
-
-            // Guardar Usuario
+            const nuevoUsuario = { run, nombre, correo, password: pass, telefono, region, comuna, direccion };
             let usuarios = JSON.parse(localStorage.getItem("collector_usuarios")) || [];
             const existe = usuarios.some(u => u.correo && u.correo.toLowerCase() === correo.toLowerCase());
 

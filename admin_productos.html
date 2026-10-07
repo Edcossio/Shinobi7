@@ -7,6 +7,7 @@
     <title>Shinobi7 - Gestión de Productos</title>
     <link rel="stylesheet" href="styles/admin.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="styles/style.css">
 </head>
 
@@ -22,10 +23,18 @@
 
         <aside class="admin-sidebar">
             <ul class="admin-nav">
-                <li class="nav-cat-title nav-group-active">- Administracion</li>
+                <li class="nav-cat-title nav-group-active">- Administración</li>
                 <li><a href="admin_home.html" class="admin-nav-link"> Dashboard</a></li>
-                <li><a href="admin_productos.html" class="admin-nav-link active"> Gestion Productos</a></li>
-                <li><a href="admin_usuarios.html" class="admin-nav-link"> Gestion Usuarios</a></li>
+                <li><a href="admin_productos.html" class="admin-nav-link active"> Gestión Productos</a></li>
+
+                <!-- Enlace al Módulo POS -->
+                <li>
+                    <a href="pos.html" class="admin-nav-link fw-bold text-success" style="background-color: #eafaf1;">
+                        <i class="bi bi-calculator me-1"></i> Punto de Venta (POS)
+                    </a>
+                </li>
+
+                <li><a href="admin_usuarios.html" class="admin-nav-link"> Gestión Usuarios</a></li>
                 <hr class="text-white-50 my-2">
                 <li><a href="index.html" class="admin-nav-link"> Volver al Home</a></li>
             </ul>
@@ -34,13 +43,26 @@
         <main class="admin-main">
 
             <div class="zte-breadcrumb">
-                <span>Administracion</span>
+                <span>Administración - Gestión de Productos</span>
                 <a href="#" id="btn-cerrar-sesion-top">Logout</a>
             </div>
 
             <div class="zte-content">
 
-                <!-- FORMULARIO -->
+                <!-- BOTÓN ACCESO RÁPIDO POS -->
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-white border border-dark">
+                    <div>
+                        <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-shop me-2 text-success"></i>Módulo de
+                            Atención Presencial</h5>
+                        <small class="text-muted">Realiza ventas directas en caja y descuenta stock en tiempo
+                            real.</small>
+                    </div>
+                    <a href="pos.html" class="btn btn-success fw-bold border-2 border-dark shadow-sm">
+                        <i class="bi bi-calculator me-1"></i> Abrir Caja / POS
+                    </a>
+                </div>
+
+                <!-- FORMULARIO DE PRODUCTO -->
                 <section class="zte-panel">
                     <h3 id="titulo-form-producto">Configuración Productos</h3>
 
