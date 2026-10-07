@@ -25,6 +25,8 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .zte-topbar {
@@ -48,34 +50,59 @@ body {
 .zte-wrapper {
     display: flex;
     flex-grow: 1;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
+/* --- Menú Lateral --- */
 .admin-sidebar {
-    width: 220px;
+    width: 340px !important;
     background-color: #ffffff;
     border-right: 1px solid var(--zte-border);
     flex-shrink: 0;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .admin-nav {
     list-style: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
 }
 
+.admin-nav li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* --- Título Administración --- */
 .nav-cat-title {
-    padding: 8px 12px;
+    width: 100%;
+    min-height: 58px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     color: var(--zte-text);
     border-bottom: 1px solid #eeeeee;
     background-color: #fafafa;
 }
 
+/* --- Botones del menú lateral --- */
 .admin-nav-link {
-    display: block;
-    padding: 8px 12px 8px 24px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 90px;
+    padding: 24px 24px;
+    box-sizing: border-box;
     color: var(--zte-text);
     text-decoration: none;
-    font-size: 0.82rem;
+    font-size: 1.15rem;
     border-bottom: 1px solid #f0f0f0;
 }
 
@@ -83,6 +110,7 @@ body {
     background-color: #f0f0f0;
 }
 
+/* Estado seleccionado */
 .nav-group-active {
     background-color: var(--zte-green-dark) !important;
     color: #ffffff !important;
@@ -94,6 +122,13 @@ body {
     font-weight: bold;
 }
 
+/* Separador del menú */
+.admin-nav hr {
+    margin: 0 !important;
+    width: 100%;
+}
+
+/* --- Panel de Trabajo Derecho --- */
 .admin-main {
     flex-grow: 1;
     display: flex;
@@ -101,6 +136,7 @@ body {
     background-color: #ffffff;
 }
 
+/* --- Barra superior del contenido --- */
 .zte-breadcrumb {
     background-color: var(--zte-header-gray);
     border-bottom: 1px solid var(--zte-border);
@@ -118,6 +154,7 @@ body {
     font-weight: bold;
 }
 
+/* --- Contenido --- */
 .zte-content {
     padding: 20px;
     flex-grow: 1;
