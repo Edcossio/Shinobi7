@@ -1,0 +1,339 @@
+/* ==========================================================================
+   ZTE F680 ROUTER WEBUI THEME (styles/admin.css)
+   ========================================================================== */
+:root {
+    --zte-green: #4ea72a;
+    --zte-green-dark: #3b841f;
+    --zte-green-light: #b4e098;
+    --zte-bg-gray: #f4f4f4;
+    --zte-header-gray: #e2e2e2;
+    --zte-border: #cccccc;
+    --zte-text: #222222;
+    --zte-text-muted: #666666;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: var(--zte-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.zte-topbar {
+    background-color: var(--zte-green);
+    color: #ffffff;
+    height: 40px;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.zte-model {
+    font-size: 0.95rem;
+    font-weight: normal;
+}
+
+.zte-wrapper {
+    display: flex;
+    flex-grow: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.admin-sidebar {
+    width: 340px !important;
+    background-color: #ffffff;
+    border-right: 1px solid var(--zte-border);
+    flex-shrink: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.admin-nav {
+    list-style: none;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+}
+
+.admin-nav li {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* --- Título Administración --- */
+.nav-cat-title {
+    width: 100%;
+    min-height: 58px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    font-weight: bold;
+    font-size: 1.05rem;
+    color: var(--zte-text);
+    border-bottom: 1px solid #eeeeee;
+    background-color: #fafafa;
+}
+
+/* --- Botones del menú lateral --- */
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 90px;
+    padding: 24px 24px;
+    box-sizing: border-box;
+    color: var(--zte-text);
+    text-decoration: none;
+    font-size: 1.15rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.admin-nav-link:hover {
+    background-color: #f0f0f0;
+}
+
+.nav-group-active {
+    background-color: var(--zte-green-dark) !important;
+    color: #ffffff !important;
+}
+
+.admin-nav-link.active {
+    background-color: var(--zte-green-light);
+    color: #000000;
+    font-weight: bold;
+}
+
+.admin-main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+}
+
+.zte-breadcrumb {
+    background-color: var(--zte-header-gray);
+    border-bottom: 1px solid var(--zte-border);
+    padding: 6px 15px;
+    font-size: 0.8rem;
+    color: var(--zte-text-muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.zte-breadcrumb a {
+    color: var(--zte-text);
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* --- Contenido --- */
+.zte-content {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.zte-panel {
+    background-color: #ffffff;
+    border: 1px solid var(--zte-border);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.zte-panel h3 {
+    font-size: 0.9rem;
+    color: var(--zte-green-dark);
+    border-bottom: 2px solid var(--zte-green);
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 0.78rem;
+    font-weight: bold;
+    color: var(--zte-text);
+}
+
+.form-control {
+    padding: 5px 8px;
+    border: 1px solid var(--zte-border);
+    font-size: 0.82rem;
+    background-color: #ffffff;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--zte-green);
+    box-shadow: 0 0 3px var(--zte-green-light);
+}
+
+.btn-admin {
+    padding: 6px 16px;
+    border: 1px solid var(--zte-border);
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--zte-bg-gray);
+    color: var(--zte-text);
+}
+
+.btn-admin:hover {
+    background-color: var(--zte-header-gray);
+}
+
+.btn-admin-primary {
+    background-color: var(--zte-green);
+    color: #ffffff;
+    border-color: var(--zte-green-dark);
+}
+
+.btn-admin-primary:hover {
+    background-color: var(--zte-green-dark);
+}
+
+.btn-admin-danger {
+    background-color: #d9534f;
+    color: #ffffff;
+    border-color: #d43f3a;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+}
+
+.admin-table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.admin-table th {
+    background-color: var(--zte-header-gray);
+    border: 1px solid var(--zte-border);
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.admin-table td {
+    border: 1px solid var(--zte-border);
+    padding: 6px 10px;
+    background-color: #ffffff;
+}
+
+.admin-table tbody tr:nth-child(even) td {
+    background-color: #fafafa;
+}
+
+.badge-status {
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 2px;
+}
+
+.badge-ok {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+}
+
+.badge-critical {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+}
+
+.badge-role-admin {
+    background-color: #d9edf7;
+    color: #31708f;
+    border: 1px solid #bce8f1;
+}
+
+.badge-role-vendor {
+    background-color: #fcf8e3;
+    color: #8a6d3b;
+    border: 1px solid #faebcc;
+}
+
+/* RESPONSIVIDAD PARCHE ADMIN */
+@media (max-width: 768px) {
+    .zte-wrapper {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        width: 100% !important;
+        border-right: none;
+        border-bottom: 2px solid var(--zte-border);
+    }
+
+    .admin-nav {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .admin-nav li {
+        flex: 1 1 auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ==========================================================================
+   AJUSTE DE TAMAÑO FLUIDO Y RESPONSIVO DEL LOGO
+   ========================================================================== */
+    .admin-logo-hero {
+        max-height: 70px;
+        transition: max-height 0.2s ease-in-out;
+    }
+
+    /* En tablets y laptops medianas */
+    @media (max-width: 991.98px) {
+        .admin-logo-hero {
+            max-height: 60px;
+        }
+    }
+
+    /* En celulares para evitar desbordamiento */
+    @media (max-width: 575.98px) {
+        .admin-logo-hero {
+            max-height: 48px;
+        }
+    }
+}

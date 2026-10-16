@@ -1,0 +1,237 @@
+/* ==========================================================================
+   1. VARIABLES & PALETA NEO-BRUTALISTA
+   ========================================================================== */
+:root {
+    --bg-main: #F2F4F7;
+    --card-bg: #FFFFFF;
+    --text-main: #121212;
+    --text-muted: #555555;
+
+    /* Acentos */
+    --accent-blue: #0091EA;
+    --accent-red: #FF3D00;
+    --accent-yellow: #FFD700;
+    --border-dark: #121212;
+}
+
+body {
+    background-color: var(--bg-main) !important;
+    color: var(--text-main);
+    font-family: 'Oswald', 'Segoe UI', sans-serif;
+}
+
+/* ==========================================================================
+   2. NAVEGACIÓN (NAVBAR)
+   ========================================================================== */
+.navbar {
+    background-color: #FFFFFF;
+    border-bottom: 3px solid var(--border-dark) !important;
+    padding: 0.8rem 0;
+}
+
+.img-logo-nav {
+    height: 55px;
+    width: auto;
+    max-width: 250px;
+    object-fit: contain;
+    transition: transform 0.2s ease-in-out;
+}
+
+.img-logo-nav:hover {
+    transform: scale(1.03);
+}
+
+.nav-item {
+    text-decoration: none !important;
+    color: var(--text-main) !important;
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    padding-bottom: 4px;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    color: var(--accent-blue) !important;
+    border-bottom: 3px solid var(--accent-yellow) !important;
+}
+
+.nav-btn-brutal {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    font-weight: 900;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    color: #000000 !important;
+    background-color: #FFDE59;
+    border: 2.5px solid #000000;
+    box-shadow: 3px 3px 0px #000000;
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-btn-brutal:hover {
+    background-color: #FFE57F;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px #000000;
+}
+
+.nav-btn-brutal.admin {
+    background-color: #00D2FF;
+}
+
+.nav-btn-brutal.admin:hover {
+    background-color: #5CE1FF;
+}
+
+/* ==========================================================================
+   3. TARJETAS & COMPONENTES NEO-BRUTALISTAS
+   ========================================================================== */
+.card {
+    background-color: var(--card-bg);
+    border: 3px solid var(--border-dark) !important;
+    border-radius: 0px !important;
+    box-shadow: 5px 5px 0px var(--border-dark);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+}
+
+.card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0px var(--accent-yellow);
+}
+
+.card-img-top {
+    width: 100%;
+    height: 250px;
+    object-fit: contain !important;
+    background-color: #FFFFFF;
+    padding: 12px;
+    border-bottom: 3px solid var(--border-dark);
+}
+
+.title-accent {
+    text-transform: uppercase;
+    border-left: 6px solid var(--accent-yellow);
+    padding-left: 12px;
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.price-tag {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--accent-blue);
+}
+
+.btn-primary {
+    background-color: var(--accent-blue) !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    border: 3px solid var(--border-dark) !important;
+    border-radius: 0px !important;
+    box-shadow: 3px 3px 0px var(--border-dark);
+    transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-yellow) !important;
+    color: var(--border-dark) !important;
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0px var(--border-dark);
+}
+
+/* ==========================================================================
+   4. PIE DE PÁGINA (FOOTER)
+   ========================================================================== */
+.footer {
+    background: #FFFFFF;
+    border-top: 3px solid var(--border-dark);
+    padding: 2rem 0;
+}
+
+.social-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background-color: #FFFFFF;
+    color: var(--border-dark);
+    border: 3px solid var(--border-dark);
+    font-size: 1.3rem;
+    text-decoration: none;
+    box-shadow: 2px 2px 0px var(--border-dark);
+    transition: all 0.15s ease;
+}
+
+.social-icon-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--border-dark);
+    color: #FFFFFF;
+}
+
+.social-icon-btn.whatsapp:hover {
+    background-color: #25D366;
+}
+
+.social-icon-btn.instagram:hover {
+    background-color: #E1306C;
+}
+
+.social-icon-btn.facebook:hover {
+    background-color: #1877F2;
+}
+
+/* ==========================================================================
+   5. SOPORTE IMPRESIÓN POS TÉRMICO
+   ========================================================================== */
+.ticket-thermal {
+    font-family: 'Courier New', Courier, monospace;
+    background: #FFFFFF;
+    color: #000000;
+    padding: 15px;
+    border: 2px dashed var(--border-dark);
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #contenedor-boleta-imprimible,
+    #contenedor-boleta-imprimible * {
+        visibility: visible;
+    }
+
+    #contenedor-boleta-imprimible {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: none;
+    }
+
+    /* ==========================================================================
+   ESTILOS PARA EL CARRUSEL NEO-BRUTALISTA
+   ========================================================================== */
+    .carousel-brutal {
+        background-color: var(--card-bg);
+        border: 3px solid var(--border-dark);
+        box-shadow: 5px 5px 0px var(--border-dark);
+        border-radius: 0px;
+    }
+
+    /* Para asegurar que el contenedor de la imagen mantenga siempre la misma altura y no salte */
+    .carousel-img-wrapper {
+        height: 100%;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+    }
+}
